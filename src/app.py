@@ -116,8 +116,8 @@ if uploaded_file:
     try:
         df = pd.read_csv(uploaded_file)
         if {'Potential (V)', 'Current (A)'}.issubset(df.columns):
-            st.subheader("Voltammogram Preview")
             with col4:
+                st.subheader("Voltammogram Preview")
                 st.scatter_chart(df.set_index('Potential (V)')['Current (A)'], x_label='Potential / V', y_label='Current / A')
         else:
             st.info("CSV does not contain 'Potential (V)' and 'Current (A)' headers. Skipping plot.")
