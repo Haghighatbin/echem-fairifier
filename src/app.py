@@ -4,7 +4,41 @@ import pandas as pd
 from io import BytesIO
 import zipfile
 
-# --- Technique-specific parameter templates ---
+st.markdown("""
+<style>
+.main-header {
+    text-align: center;
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+.info-box {
+    background-color: #e7f3ff;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid #1f77b4;
+    margin: 1rem 0;
+}
+</style>
+""", unsafe_allow_html=True)
+st.subheader('A Project by Amin Haghighatbin', divider=True, width=400)
+st.markdown('<div class="main-header">', unsafe_allow_html=True)
+st.title("⚡ EChem FAIRifier")
+st.markdown("**Making electrochemical data FAIR-compliant**")
+st.markdown('</div>', unsafe_allow_html=True)
+
+with st.expander("ℹ️ What is FAIR data?"):
+    st.markdown("""
+    **FAIR** stands for:
+    - **F**indable: Easy to locate and identify
+    - **A**ccessible: Retrievable by identifier using standard protocols  
+    - **I**nteroperable: Data can be integrated with other data
+    - **R**eusable: Well-described so that it can be replicated/combined
+    
+    This tool helps make your electrochemical data FAIR by adding standardised metadata.
+    """)
+
+st.set_page_config(page_title="EChem FAIRifier", layout="wide")
+
 TECHNIQUE_PARAMETERS = {
     "CV": {
         "scan_rate": 0.1,
@@ -36,9 +70,7 @@ TECHNIQUE_PARAMETERS = {
         "total_duration": 65
     }
 }
-st.subheader('A Project by Amin Haghighatbin', divider=True, width=400)
-st.set_page_config(page_title="EChem FAIRifier", layout="wide")
-st.title("EChem FAIRifier")
+
 
 col1, col2 = st.columns([1, 1])
 with col1:
@@ -51,9 +83,6 @@ with col1:
     reference_electrode = st.text_input("Reference Electrode", "Ag/AgCl")
     counter_electrode = st.text_input("Counter Electrode", "Platinum wire")
 
-# --- Technique Parameters Panel ---
-
-# col1, col2 = st.columns([1, 1])
 
 with col2:
     st.subheader("Technique Parameters")
@@ -84,7 +113,6 @@ if uploaded_file:
         st.subheader("Metadata Preview (YAML)")
         st.code(metadata_yaml_str, language="yaml")
 
-    # --- Preview Plot (if valid headers exist) ---
     try:
         df = pd.read_csv(uploaded_file)
         if {'Potential (V)', 'Current (A)'}.issubset(df.columns):
@@ -97,7 +125,6 @@ if uploaded_file:
         st.error(f"Error reading CSV for plotting: {e}")
 
 
-    # --- Export ZIP including CSV and YAML ---
     zip_buffer = BytesIO()
     try:
         with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED) as zip_file:
