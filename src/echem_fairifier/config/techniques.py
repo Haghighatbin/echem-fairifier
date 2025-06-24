@@ -9,6 +9,7 @@ from dataclasses import dataclass
 @dataclass
 class TechniqueParameter:
     """Definition of a technique parameter."""
+
     name: str
     default_value: Any
     description: str
@@ -20,7 +21,7 @@ class TechniqueParameter:
 
 class ElectrochemicalTechniques:
     """Registry of electrochemical techniques and their parameters."""
-    
+
     TECHNIQUE_PARAMETERS = {
         "CV": {
             "scan_rate": TechniqueParameter(
@@ -29,7 +30,7 @@ class ElectrochemicalTechniques:
                 description="Rate at which potential is swept",
                 unit="V/s",
                 min_value=0.001,
-                max_value=10.0
+                max_value=10.0,
             ),
             "start_potential": TechniqueParameter(
                 name="start_potential",
@@ -37,7 +38,7 @@ class ElectrochemicalTechniques:
                 description="Initial potential for the sweep",
                 unit="V",
                 min_value=-5.0,
-                max_value=5.0
+                max_value=5.0,
             ),
             "end_potential": TechniqueParameter(
                 name="end_potential",
@@ -45,7 +46,7 @@ class ElectrochemicalTechniques:
                 description="Final potential for the sweep",
                 unit="V",
                 min_value=-5.0,
-                max_value=5.0
+                max_value=5.0,
             ),
             "step_size": TechniqueParameter(
                 name="step_size",
@@ -53,7 +54,7 @@ class ElectrochemicalTechniques:
                 description="Potential step increment",
                 unit="V",
                 min_value=0.0001,
-                max_value=0.1
+                max_value=0.1,
             ),
             "cycles": TechniqueParameter(
                 name="cycles",
@@ -62,8 +63,8 @@ class ElectrochemicalTechniques:
                 unit="",
                 parameter_type="number",
                 min_value=1,
-                max_value=100
-            )
+                max_value=100,
+            ),
         },
         "DPV": {
             "pulse_amplitude": TechniqueParameter(
@@ -72,7 +73,7 @@ class ElectrochemicalTechniques:
                 description="Amplitude of the differential pulse",
                 unit="V",
                 min_value=0.001,
-                max_value=0.5
+                max_value=0.5,
             ),
             "pulse_width": TechniqueParameter(
                 name="pulse_width",
@@ -80,7 +81,7 @@ class ElectrochemicalTechniques:
                 description="Width of each pulse",
                 unit="s",
                 min_value=0.001,
-                max_value=1.0
+                max_value=1.0,
             ),
             "step_potential": TechniqueParameter(
                 name="step_potential",
@@ -88,7 +89,7 @@ class ElectrochemicalTechniques:
                 description="Potential step between pulses",
                 unit="V",
                 min_value=0.001,
-                max_value=0.1
+                max_value=0.1,
             ),
             "scan_rate": TechniqueParameter(
                 name="scan_rate",
@@ -96,8 +97,8 @@ class ElectrochemicalTechniques:
                 description="Effective scan rate",
                 unit="V/s",
                 min_value=0.001,
-                max_value=1.0
-            )
+                max_value=1.0,
+            ),
         },
         "SWV": {
             "frequency": TechniqueParameter(
@@ -106,7 +107,7 @@ class ElectrochemicalTechniques:
                 description="Square wave frequency",
                 unit="Hz",
                 min_value=1,
-                max_value=1000
+                max_value=1000,
             ),
             "amplitude": TechniqueParameter(
                 name="amplitude",
@@ -114,7 +115,7 @@ class ElectrochemicalTechniques:
                 description="Square wave amplitude",
                 unit="V",
                 min_value=0.001,
-                max_value=0.5
+                max_value=0.5,
             ),
             "step_height": TechniqueParameter(
                 name="step_height",
@@ -122,8 +123,8 @@ class ElectrochemicalTechniques:
                 description="Potential step height",
                 unit="V",
                 min_value=0.001,
-                max_value=0.1
-            )
+                max_value=0.1,
+            ),
         },
         "EIS": {
             "frequency_range": TechniqueParameter(
@@ -131,7 +132,7 @@ class ElectrochemicalTechniques:
                 default_value=[100000, 0.01],
                 description="Frequency range [high, low]",
                 unit="Hz",
-                parameter_type="list"
+                parameter_type="list",
             ),
             "ac_amplitude": TechniqueParameter(
                 name="ac_amplitude",
@@ -139,7 +140,7 @@ class ElectrochemicalTechniques:
                 description="AC perturbation amplitude",
                 unit="V",
                 min_value=0.001,
-                max_value=0.1
+                max_value=0.1,
             ),
             "bias_potential": TechniqueParameter(
                 name="bias_potential",
@@ -147,7 +148,7 @@ class ElectrochemicalTechniques:
                 description="DC bias potential",
                 unit="V",
                 min_value=-5.0,
-                max_value=5.0
+                max_value=5.0,
             ),
             "equilibration_time": TechniqueParameter(
                 name="equilibration_time",
@@ -155,8 +156,8 @@ class ElectrochemicalTechniques:
                 description="Pre-equilibration time",
                 unit="s",
                 min_value=0,
-                max_value=3600
-            )
+                max_value=3600,
+            ),
         },
         "CA": {
             "step_potentials": TechniqueParameter(
@@ -164,14 +165,14 @@ class ElectrochemicalTechniques:
                 default_value=[0.0, 0.5],
                 description="Applied potentials for each step",
                 unit="V",
-                parameter_type="list"
+                parameter_type="list",
             ),
             "step_times": TechniqueParameter(
                 name="step_times",
                 default_value=[5, 60],
                 description="Duration of each potential step",
                 unit="s",
-                parameter_type="list"
+                parameter_type="list",
             ),
             "total_duration": TechniqueParameter(
                 name="total_duration",
@@ -179,35 +180,35 @@ class ElectrochemicalTechniques:
                 description="Total experiment duration",
                 unit="s",
                 min_value=1,
-                max_value=86400
-            )
-        }
+                max_value=86400,
+            ),
+        },
     }
-    
+
     TECHNIQUE_DESCRIPTIONS = {
         "CV": "Cyclic Voltammetry - Potential swept linearly between limits",
         "DPV": "Differential Pulse Voltammetry - Series of potential pulses",
         "SWV": "Square Wave Voltammetry - Square wave potential modulation",
         "EIS": "Electrochemical Impedance Spectroscopy - AC frequency response",
-        "CA": "Chronoamperometry - Current response to potential steps"
+        "CA": "Chronoamperometry - Current response to potential steps",
     }
-    
+
     @classmethod
     def get_technique_list(cls) -> List[str]:
         """Get list of available techniques."""
         return list(cls.TECHNIQUE_PARAMETERS.keys())
-    
+
     @classmethod
     def get_technique_parameters(cls, technique: str) -> Dict[str, TechniqueParameter]:
         """Get parameters for a specific technique."""
         return cls.TECHNIQUE_PARAMETERS.get(technique, {})
-    
+
     @classmethod
     def get_default_values(cls, technique: str) -> Dict[str, Any]:
         """Get default parameter values for a technique."""
         params = cls.get_technique_parameters(technique)
         return {name: param.default_value for name, param in params.items()}
-    
+
     @classmethod
     def get_technique_description(cls, technique: str) -> str:
         """Get description of a technique."""

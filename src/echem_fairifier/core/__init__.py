@@ -6,6 +6,6 @@ from .emmo_integration import EMMOElectrochemistryIntegration
 
 __all__ = [
     "FAIRMetadataGenerator",
-    "ECDataValidator", 
-    "EMMOElectrochemistryIntegration"
+    "ECDataValidator",
+    "EMMOElectrochemistryIntegration",
 ]

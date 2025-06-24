@@ -12,11 +12,12 @@ from ..config.techniques import ElectrochemicalTechniques, TechniqueParameter
 
 class UIComponents:
     """Collection of reusable UI components."""
-    
+
     @staticmethod
     def render_header():
         """Render the application header."""
-        st.markdown("""
+        st.markdown(
+            """
         <style>
         .main-header {
             text-align: center;
@@ -55,125 +56,135 @@ class UIComponents:
             margin: 1rem 0;
         }
         </style>
-        """, unsafe_allow_html=True)
-        
+        """,
+            unsafe_allow_html=True,
+        )
+
         st.markdown('<div class="main-header">', unsafe_allow_html=True)
         st.title("⚡ EChem FAIRifier")
-        st.markdown('</div>', unsafe_allow_html=True)
-        st.markdown('<div class="subtitle">Making electrochemical data FAIR-compliant</div>', 
-                   unsafe_allow_html=True)
-    
+        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown(
+            '<div class="subtitle">Making electrochemical data FAIR-compliant</div>',
+            unsafe_allow_html=True,
+        )
+
     @staticmethod
     def render_fair_info():
         """Render FAIR principles information."""
         with st.expander("ℹ️ What is FAIR data?", expanded=False):
             col1, col2 = st.columns(2)
-            
+
             with col1:
-                st.markdown("""
+                st.markdown(
+                    """
                 **FAIR Principles:**
                 - **F**indable: Easy to locate and identify
-                - **A**ccessible: Retrievable using standard protocols  
+                - **A**ccessible: Retrievable using standard protocols
                 - **I**nteroperable: Can integrate with other data
                 - **R**eusable: Well-described for replication
-                """)
-            
+                """
+                )
+
             with col2:
-                st.markdown("""
+                st.markdown(
+                    """
                 **This tool helps by:**
                 - Adding standardised metadata
                 - Using controlled vocabularies (EMMO)
                 - Generating unique identifiers
                 - Ensuring proper attribution
-                """)
-    
+                """
+                )
+
     @staticmethod
     def render_file_upload() -> Optional[object]:
         """Render file upload widget with validation."""
         st.subheader("📁 Upload Data")
-        
+
         uploaded_file = st.file_uploader(
             "Choose your electrochemical data file",
             type=["csv"],
-            help="Upload a CSV file containing your electrochemical measurement data"
+            help="Upload a CSV file containing your electrochemical measurement data",
         )
-        
+
         if uploaded_file:
             # Show file info
             file_details = {
                 "Filename": uploaded_file.name,
                 "File size": f"{uploaded_file.size / 1024:.1f} KB",
-                "File type": uploaded_file.type
+                "File type": uploaded_file.type,
             }
-            
+
             with st.expander("📋 File Information"):
                 for key, value in file_details.items():
                     st.write(f"**{key}:** {value}")
-        
+
         return uploaded_file
-    
+
     @staticmethod
     def render_technique_selector() -> Tuple[str, str]:
         """Render technique selection with description."""
         st.subheader("🔬 Experimental Technique")
-        
+
         technique_list = ElectrochemicalTechniques.get_technique_list()
-        
+
         technique = st.selectbox(
             "Select Electrochemical Technique",
             technique_list,
-            help="Choose the electrochemical method used for your measurement"
+            help="Choose the electrochemical method used for your measurement",
         )
-        
+
         # Show technique description
         description = ElectrochemicalTechniques.get_technique_description(technique)
         st.info(f"**{technique}:** {description}")
-        
+
         return technique, description
-    
+
     @staticmethod
     def render_technique_parameters(technique: str) -> Dict[str, Any]:
         """Render technique-specific parameter inputs."""
         st.subheader("⚙️ Technique Parameters")
-        
+
         parameters = ElectrochemicalTechniques.get_technique_parameters(technique)
         custom_params = {}
-        
+
         if not parameters:
             st.warning(f"No parameters defined for {technique}")
             return {}
-        
+
         # Create parameter inputs
         cols = st.columns(2)
         col_idx = 0
-        
+
         for param_name, param_def in parameters.items():
             with cols[col_idx % 2]:
                 custom_params[param_name] = UIComponents._render_parameter_input(
                     param_name, param_def
                 )
             col_idx += 1
-        
+
         return custom_params
-    
+
     @staticmethod
     def _render_parameter_input(param_name: str, param_def: TechniqueParameter) -> Any:
         """Render individual parameter input."""
         label = f"{param_def.name.replace('_', ' ').title()}"
         if param_def.unit:
             label += f" ({param_def.unit})"
-        
+
         if param_def.parameter_type == "list":
             # Handle list parameters
             val_str = st.text_input(
                 label,
                 value=", ".join(map(str, param_def.default_value)),
-                help=param_def.description
+                help=param_def.description,
             )
             try:
                 return [float(x.strip()) for x in val_str.split(",") if x.strip()]
             except ValueError:
-                st.error(f"Invalid format for {param_name}. Use comma-separated numbers.")
+                st.error(
+                    f"Invalid format for {param_name}. Use comma-separated numbers."
+                )
                 return param_def.default_value
         else:
             # Handle numeric parameters
@@ -183,118 +194,118 @@ class UIComponents:
                 min_value=float(param_def.min_value),
                 max_value=float(param_def.max_value),
                 help=param_def.description,
-                format="%.6f" if param_def.default_value < 0.1 else "%.3f"
+                format="%.6f" if param_def.default_value < 0.1 else "%.3f",
             )
-    
+
     @staticmethod
     def render_experimental_details() -> Dict[str, str]:
         """Render experimental setup inputs."""
         st.subheader("🧪 Experimental Setup")
-        
+
         col1, col2 = st.columns(2)
-        
+
         with col1:
             working_electrode = st.text_input(
                 "Working Electrode",
                 value="Glassy carbon, 3 mm",
-                help="Material and dimensions of working electrode"
+                help="Material and dimensions of working electrode",
             )
-            
+
             reference_electrode = st.text_input(
                 "Reference Electrode",
                 value="Ag/AgCl",
-                help="Type of reference electrode used"
+                help="Type of reference electrode used",
             )
-            
+
             electrolyte = st.text_input(
                 "Electrolyte",
                 value="3 mM [Fe(CN)6]³⁻/⁴⁻ in 0.1 M KNO₃",
-                help="Electrolyte composition and concentration"
+                help="Electrolyte composition and concentration",
             )
-        
+
         with col2:
             counter_electrode = st.text_input(
                 "Counter Electrode",
                 value="Platinum wire",
-                help="Material of counter electrode"
+                help="Material of counter electrode",
             )
-            
+
             temperature = st.text_input(
                 "Temperature",
                 value="Room temperature (20±2°C)",
-                help="Experimental temperature"
+                help="Experimental temperature",
             )
-            
+
             atmosphere = st.selectbox(
                 "Atmosphere",
                 ["Air", "Nitrogen", "Argon", "Other"],
-                help="Atmospheric conditions during measurement"
+                help="Atmospheric conditions during measurement",
             )
-        
+
         return {
             "working_electrode": working_electrode,
             "reference_electrode": reference_electrode,
             "counter_electrode": counter_electrode,
             "electrolyte": electrolyte,
             "temperature": temperature,
-            "atmosphere": atmosphere
+            "atmosphere": atmosphere,
         }
-    
+
     @staticmethod
     def render_attribution_fields() -> Dict[str, str]:
         """Render attribution and contact information fields."""
-        with st.expander("👤 Attribution & Contact (Optional but Recommended)", expanded=False):
+        with st.expander(
+            "👤 Attribution & Contact (Optional but Recommended)", expanded=False
+        ):
             col1, col2 = st.columns(2)
-            
+
             with col1:
                 creator = st.text_input(
-                    "Creator/Researcher Name",
-                    help="Primary researcher or data creator"
+                    "Creator/Researcher Name", help="Primary researcher or data creator"
                 )
-                
+
                 institution = st.text_input(
                     "Institution/Organization",
-                    help="Research institution or organization"
+                    help="Research institution or organization",
                 )
-                
+
                 orcid = st.text_input(
                     "ORCID ID",
                     placeholder="0000-0000-0000-0000",
-                    help="ORCID identifier for researcher attribution"
+                    help="ORCID identifier for researcher attribution",
                 )
-            
+
             with col2:
                 contact_email = st.text_input(
-                    "Contact Email",
-                    help="Email for data inquiries"
+                    "Contact Email", help="Email for data inquiries"
                 )
-                
+
                 publication_doi = st.text_input(
                     "Related Publication DOI",
                     placeholder="10.1000/xyz123",
-                    help="DOI of related publication"
+                    help="DOI of related publication",
                 )
-                
+
                 license_choice = st.selectbox(
                     "Data License",
                     ["CC-BY-4.0", "CC0-1.0", "MIT", "Other"],
-                    help="License for data reuse"
+                    help="License for data reuse",
                 )
-        
+
         return {
             "creator": creator,
             "institution": institution,
             "contact_email": contact_email,
             "orcid": orcid,
             "publication_doi": publication_doi,
-            "license": license_choice
+            "license": license_choice,
         }
-    
+
     @staticmethod
     def render_data_preview(df: pd.DataFrame, technique: str) -> None:
         """Render data preview with appropriate plotting."""
         st.subheader("📊 Data Preview")
-        
+
         # Show basic data info
         with st.expander("📋 Dataset Information"):
             col1, col2, col3 = st.columns(3)
@@ -303,89 +314,119 @@ class UIComponents:
             with col2:
                 st.metric("Columns", len(df.columns))
             with col3:
-                st.metric("File Size", f"{df.memory_usage(deep=True).sum() / 1024:.1f} KB")
-            
+                st.metric(
+                    "File Size", f"{df.memory_usage(deep=True).sum() / 1024:.1f} KB"
+                )
+
             st.write("**Columns found:**", list(df.columns))
-        
+
         # Generate appropriate plot
         fig = UIComponents._create_technique_plot(df, technique)
         if fig:
-            st.plotly_chart(fig, use_container_width=True, key=f"plot_{technique}_{hash(str(df.columns))}")
+            st.plotly_chart(
+                fig,
+                use_container_width=True,
+                key=f"plot_{technique}_{hash(str(df.columns))}",
+            )
         else:
-            st.info("Unable to generate plot. Please check column names match expected format.")
-            
+            st.info(
+                "Unable to generate plot. Please check column names match expected format."
+            )
+
         # Show data sample
         with st.expander("🔍 Data Sample (First 10 rows)"):
-            st.dataframe(df.head(10), key=f"dataframe_{technique}_{hash(str(df.shape))}")
-    
+            st.dataframe(
+                df.head(10), key=f"dataframe_{technique}_{hash(str(df.shape))}"
+            )
+
     @staticmethod
     def _create_technique_plot(df: pd.DataFrame, technique: str) -> Optional[go.Figure]:
         """Create appropriate plot for the technique."""
         try:
-            if technique == "CV" and all(col in df.columns for col in ["Potential (V)", "Current (A)"]):
+            if technique == "CV" and all(
+                col in df.columns for col in ["Potential (V)", "Current (A)"]
+            ):
                 fig = px.line(
-                    df, x="Potential (V)", y="Current (A)",
+                    df,
+                    x="Potential (V)",
+                    y="Current (A)",
                     title="Cyclic Voltammogram",
-                    labels={"Potential (V)": "Potential / V", "Current (A)": "Current / A"}
+                    labels={
+                        "Potential (V)": "Potential / V",
+                        "Current (A)": "Current / A",
+                    },
                 )
-                
-            elif technique == "EIS" and all(col in df.columns for col in ["Z_real (Ohm)", "Z_imag (Ohm)"]):
+
+            elif technique == "EIS" and all(
+                col in df.columns for col in ["Z_real (Ohm)", "Z_imag (Ohm)"]
+            ):
                 fig = px.scatter(
-                    df, x="Z_real (Ohm)", y="Z_imag (Ohm)",
+                    df,
+                    x="Z_real (Ohm)",
+                    y="Z_imag (Ohm)",
                     title="Nyquist Plot",
-                    labels={"Z_real (Ohm)": "Z' / Ω", "Z_imag (Ohm)": "-Z'' / Ω"}
+                    labels={"Z_real (Ohm)": "Z' / Ω", "Z_imag (Ohm)": "-Z'' / Ω"},
                 )
                 fig.update_yaxis(autorange="reversed")
-                
-            elif technique == "CA" and all(col in df.columns for col in ["Time (s)", "Current (A)"]):
+
+            elif technique == "CA" and all(
+                col in df.columns for col in ["Time (s)", "Current (A)"]
+            ):
                 fig = px.line(
-                    df, x="Time (s)", y="Current (A)",
+                    df,
+                    x="Time (s)",
+                    y="Current (A)",
                     title="Chronoamperogram",
-                    labels={"Time (s)": "Time / s", "Current (A)": "Current / A"}
+                    labels={"Time (s)": "Time / s", "Current (A)": "Current / A"},
                 )
-                
+
             elif all(col in df.columns for col in ["Potential (V)", "Current (A)"]):
                 # Generic electrochemical plot
                 fig = px.line(
-                    df, x="Potential (V)", y="Current (A)",
+                    df,
+                    x="Potential (V)",
+                    y="Current (A)",
                     title=f"{technique} Measurement",
-                    labels={"Potential (V)": "Potential / V", "Current (A)": "Current / A"}
+                    labels={
+                        "Potential (V)": "Potential / V",
+                        "Current (A)": "Current / A",
+                    },
                 )
             else:
                 return None
-            
+
             fig.update_layout(
-                template="plotly_white",
-                showlegend=False,
-                font=dict(size=12)
+                template="plotly_white", showlegend=False, font=dict(size=12)
             )
             return fig
-            
+
         except Exception as e:
             st.error(f"Error creating plot: {str(e)}")
             return None
-    
+
     @staticmethod
     def render_validation_results(validation_results: Dict[str, List[str]]) -> None:
         """Render metadata validation results."""
         errors = validation_results.get("errors", [])
         warnings = validation_results.get("warnings", [])
-        
+
         if errors:
             st.markdown('<div class="warning-box">', unsafe_allow_html=True)
             st.error("❌ **Validation Errors:**")
             for error in errors:
                 st.write(f"• {error}")
-            st.markdown('</div>', unsafe_allow_html=True)
-        
+            st.markdown("</div>", unsafe_allow_html=True)
+
         if warnings:
             st.markdown('<div class="info-box">', unsafe_allow_html=True)
             st.warning("⚠️ **Recommendations:**")
             for warning in warnings:
                 st.write(f"• {warning}")
-            st.markdown('</div>', unsafe_allow_html=True)
-        
+            st.markdown("</div>", unsafe_allow_html=True)
+
         if not errors and not warnings:
             st.markdown('<div class="success-box">', unsafe_allow_html=True)
-            st.success("✅ **Metadata validation passed!** Your data meets FAIR standards.")
-            st.markdown('</div>', unsafe_allow_html=True)
+            st.success(
+                "✅ **Metadata validation passed!** Your data meets FAIR standards."
+            )
+            st.markdown("</div>", unsafe_allow_html=True)

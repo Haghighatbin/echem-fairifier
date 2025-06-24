@@ -1,7 +1,7 @@
 """
 EChem FAIRifier - Making electrochemical data FAIR-compliant.
 
-This package provides tools for generating FAIR (Findable, Accessible, 
+This package provides tools for generating FAIR (Findable, Accessible,
 Interoperable, Reusable) metadata for electrochemical experiments.
 """
 
@@ -21,8 +21,8 @@ from .ui.components import UIComponents
 
 __all__ = [
     "FAIRMetadataGenerator",
-    "ECDataValidator", 
+    "ECDataValidator",
     "EMMOElectrochemistryIntegration",
     "ElectrochemicalTechniques",
-    "UIComponents"
+    "UIComponents",
 ]
