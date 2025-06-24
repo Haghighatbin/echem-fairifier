@@ -1,0 +1,369 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/your-org/echem-fairifier/schemas/fair_metadata.json",
+  "title": "EChem FAIR Metadata Schema",
+  "description": "JSON Schema for FAIR-compliant electrochemical experiment metadata",
+  "type": "object",
+  "required": [
+    "experiment_id",
+    "created_date",
+    "technique",
+    "experimental_setup",
+    "dataset"
+  ],
+  "properties": {
+    "experiment_id": {
+      "type": "string",
+      "description": "Unique identifier for the experiment",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when metadata was created"
+    },
+    "schema_version": {
+      "type": "string",
+      "description": "Version of the metadata schema",
+      "default": "1.0.0"
+    },
+    "technique": {
+      "type": "object",
+      "required": ["name", "parameters"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": ["CV", "DPV", "SWV", "EIS", "CA"],
+          "description": "Electrochemical technique used"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of the technique"
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Technique-specific parameters",
+          "additionalProperties": true
+        },
+        "emmo_iri": {
+          "type": "string",
+          "format": "uri",
+          "description": "EMMO ontology IRI for the technique"
+        },
+        "emmo_label": {
+          "type": "string",
+          "description": "EMMO ontology label"
+        },
+        "emmo_definition": {
+          "type": "string",
+          "description": "EMMO ontology definition"
+        }
+      }
+    },
+    "experimental_setup": {
+      "type": "object",
+      "required": [
+        "working_electrode",
+        "reference_electrode",
+        "counter_electrode",
+        "electrolyte"
+      ],
+      "properties": {
+        "working_electrode": {
+          "type": "string",
+          "description": "Description of working electrode material and dimensions",
+          "minLength": 1
+        },
+        "reference_electrode": {
+          "type": "string",
+          "description": "Type of reference electrode used",
+          "minLength": 1
+        },
+        "counter_electrode": {
+          "type": "string",
+          "description": "Description of counter electrode material",
+          "minLength": 1
+        },
+        "electrolyte": {
+          "type": "string",
+          "description": "Electrolyte composition and concentration",
+          "minLength": 1
+        },
+        "temperature": {
+          "type": "string",
+          "description": "Experimental temperature",
+          "default": "Room temperature"
+        },
+        "atmosphere": {
+          "type": "string",
+          "description": "Atmospheric conditions",
+          "enum": ["Air", "Nitrogen", "Argon", "Other"],
+          "default": "Air"
+        },
+        "ph": {
+          "type": "number",
+          "description": "pH of the electrolyte solution",
+          "minimum": 0,
+          "maximum": 14
+        },
+        "scan_area": {
+          "type": "number",
+          "description": "Geometric area of working electrode in cm²",
+          "minimum": 0
+        }
+      }
+    },
+    "dataset": {
+      "type": "object",
+      "required": ["filename", "format"],
+      "properties": {
+        "filename": {
+          "type": "string",
+          "description": "Name of the data file",
+          "minLength": 1
+        },
+        "format": {
+          "type": "string",
+          "description": "File format",
+          "default": "CSV"
+        },
+        "encoding": {
+          "type": "string",
+          "description": "Character encoding",
+          "default": "UTF-8"
+        },
+        "columns_expected": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Expected column names in the dataset"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the dataset content"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "File size in bytes"
+        },
+        "checksum": {
+          "type": "string",
+          "description": "File checksum for integrity verification"
+        }
+      }
+    },
+    "fair_compliance": {
+      "type": "object",
+      "properties": {
+        "findable": {
+          "type": "object",
+          "properties": {
+            "unique_identifier": {
+              "type": "string",
+              "description": "Globally unique identifier"
+            },
+            "metadata_standard": {
+              "type": "string",
+              "description": "Metadata standard used",
+              "default": "EChem-FAIR v1.0"
+            },
+            "keywords": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Keywords for discovery"
+            }
+          }
+        },
+        "accessible": {
+          "type": "object",
+          "properties": {
+            "access_protocol": {
+              "type": "string",
+              "description": "How to access the data"
+            },
+            "format": {
+              "type": "string",
+              "description": "Data format accessibility"
+            },
+            "access_url": {
+              "type": "string",
+              "format": "uri",
+              "description": "URL where data can be accessed"
+            }
+          }
+        },
+        "interoperable": {
+          "type": "object",
+          "properties": {
+            "metadata_vocabulary": {
+              "type": "string",
+              "description": "Vocabulary used for metadata"
+            },
+            "data_format_standard": {
+              "type": "string",
+              "description": "Standard format used for data"
+            }
+          }
+        },
+        "reusable": {
+          "type": "object",
+          "properties": {
+            "license": {
+              "type": "string",
+              "description": "Data usage license",
+              "enum": [
+                "CC0-1.0",
+                "CC-BY-4.0",
+                "CC-BY-SA-4.0",
+                "MIT",
+                "Apache-2.0",
+                "Other"
+              ]
+            },
+            "provenance": {
+              "type": "string",
+              "description": "Data origin and processing history"
+            },
+            "quality_assessment": {
+              "type": "string",
+              "description": "Quality control measures applied"
+            }
+          }
+        }
+      }
+    },
+    "attribution": {
+      "type": "object",
+      "properties": {
+        "creator": {
+          "type": "string",
+          "description": "Primary data creator/researcher"
+        },
+        "institution": {
+          "type": "string",
+          "description": "Institutional affiliation"
+        },
+        "contact_email": {
+          "type": "string",
+          "format": "email",
+          "description": "Contact email for data inquiries"
+        },
+        "orcid": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{4}-\\d{4}-\\d{3}[0-9X]$",
+          "description": "ORCID identifier of the researcher"
+        },
+        "contributors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "role": {"type": "string"},
+              "orcid": {"type": "string"}
+            }
+          },
+          "description": "Additional contributors"
+        }
+      }
+    },
+    "related_work": {
+      "type": "object",
+      "properties": {
+        "publication_doi": {
+          "type": "string",
+          "pattern": "^10\\.\\d+/.+$",
+          "description": "DOI of related publication"
+        },
+        "related_datasets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Related dataset identifiers"
+        },
+        "funding_source": {
+          "type": "string",
+          "description": "Funding information"
+        },
+        "project_name": {
+          "type": "string",
+          "description": "Research project name"
+        },
+        "grant_number": {
+          "type": "string",
+          "description": "Grant or award number"
+        }
+      }
+    },
+    "emmo_compliance": {
+      "type": "object",
+      "properties": {
+        "ontology_version": {
+          "type": "string",
+          "format": "uri",
+          "description": "EMMO ontology version used"
+        },
+        "terms_used": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "iri": {
+                "type": "string",
+                "format": "uri"
+              },
+              "label": {
+                "type": "string"
+              },
+              "used_for": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "EMMO terms used in this metadata"
+        },
+        "vocabulary_mapping": {
+          "type": "object",
+          "description": "Mapping of input values to EMMO vocabulary"
+        }
+      }
+    },
+    "quality_metrics": {
+      "type": "object",
+      "properties": {
+        "completeness_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Metadata completeness score (0-1)"
+        },
+        "fair_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Overall FAIR compliance score (0-1)"
+        },
+        "validation_errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Validation error messages"
+        },
+        "validation_warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Validation warning messages"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
