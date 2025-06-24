@@ -10,8 +10,11 @@ from io import BytesIO
 import zipfile
 from typing import Dict, Any
 
+# Import our custom modules
 from .config.techniques import ElectrochemicalTechniques
 from .core.metadata_generator import FAIRMetadataGenerator
+from .core.validator import ECDataValidator
+from .core.emmo_integration import EMMOElectrochemistryIntegration
 from .ui.components import UIComponents
 
 # Page configuration
@@ -30,19 +33,25 @@ st.set_page_config(
 def main():
     """Main application function."""
     
+    # Initialize components
     ui = UIComponents()
     metadata_gen = FAIRMetadataGenerator()
+    validator = ECDataValidator()
+    emmo_integration = EMMOElectrochemistryIntegration()
     
+    # Render header
     ui.render_header()
     ui.render_fair_info()
     
+    # Sidebar for progress tracking
     with st.sidebar:
         st.header("📋 Progress")
         progress_container = st.container()
     
+    # Main content area
     tab1, tab2, tab3 = st.tabs(["📁 Data Upload", "📝 Metadata", "📦 Export"])
     
-    # Initialise session state
+    # Initialize session state
     if 'uploaded_file' not in st.session_state:
         st.session_state.uploaded_file = None
     if 'metadata' not in st.session_state:
@@ -66,15 +75,14 @@ def main():
                 df = pd.read_csv(uploaded_file)
                 
                 if df.empty:
-                    st.warning("⚠️ The uploaded file appears to be empty/incomplete.")
+                    st.warning("⚠️ The uploaded file appears to be empty.")
                     return
                 
                 # Store dataframe in session state
                 st.session_state.df = df
                 
                 # Show data preview
-                # [TODO: Needs more clever algo to ignore the headers and handle different column-headers]
-                ui.render_data_preview(df, "CV")  # Default to CV for preview 
+                ui.render_data_preview(df, "CV")  # Default to CV for preview
                 
                 st.success("✅ File uploaded successfully!")
                 
@@ -118,6 +126,7 @@ def main():
                     "filename": st.session_state.uploaded_file.name
                 }
                 
+                # Generate base metadata
                 metadata = metadata_gen.generate_metadata(
                     technique=technique,
                     technique_parameters=technique_parameters,
@@ -125,13 +134,22 @@ def main():
                     dataset_info=dataset_info
                 )
                 
+                # Enrich with EMMO terms
+                metadata = emmo_integration.enrich_metadata_with_emmo(metadata)
+                
                 st.session_state.metadata = metadata
                 
-                # Validate metadata
-                validation_results = metadata_gen.validate_metadata(metadata)
+                # Comprehensive validation
+                validation_results = validator.validate_metadata(metadata)
+                
+                # Add EMMO validation
+                emmo_validation = emmo_integration.validate_metadata_terms(metadata)
+                if emmo_validation.get("suggestions"):
+                    validation_results["info"].extend(emmo_validation["suggestions"])
+                
                 st.session_state.validation_results = validation_results
                 
-                st.success("✅ Metadata generated successfully!")
+                st.success("✅ Metadata generated successfully with EMMO enrichment!")
                 
             except Exception as e:
                 st.error(f"❌ Error generating metadata: {str(e)}")
@@ -272,7 +290,7 @@ This bundle contains FAIR-compliant electrochemical data generated using EChem F
 This data follows FAIR principles:
 - **Findable:** Unique identifier and rich metadata
 - **Accessible:** Open formats (CSV, YAML)
-- **Interoperable:** Standardised vocabulary and structure
+- **Interoperable:** Standardized vocabulary and structure
 - **Reusable:** Clear licensing and attribution
 
 ## Citation
@@ -303,7 +321,7 @@ authors:
   affiliation: "{attribution.get('institution', '')}"
 date-released: "{metadata.get('created_date', '')[:10]}"
 license: "{metadata.get('fair_compliance', {}).get('reusable', {}).get('license', 'Unknown')}"
-repository-code: "https://github.com/your-org/echem-fairifier"
+repository-code: "https://github.com/haghighatbin/echem-fairifier"
 """
     return cff_content
 
