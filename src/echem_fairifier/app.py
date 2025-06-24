@@ -15,6 +15,8 @@ from .core.metadata_generator import FAIRMetadataGenerator
 from .core.validator import ECDataValidator
 from .core.emmo_integration import EMMOElectrochemistryIntegration
 from .ui.components import UIComponents
+from echem_fairifier._version import __version__, get_version_info
+
 
 # Page configuration
 st.set_page_config(
@@ -24,7 +26,7 @@ st.set_page_config(
     menu_items={
         "Get Help": "https://github.com/haghighatbin/echem-fairifier",
         "Report a bug": "https://github.com/haghighatbin/echem-fairifier/issues",
-        "About": "EChem FAIRifier v1.0 - Making electrochemical data FAIR-compliant",
+        "About": f"EChem FAIRifier v{__version__} - Making electrochemical data FAIR-compliant",
     },
 )
 
@@ -41,14 +43,12 @@ def main():
     # Render header
     ui.render_header()
 
-    st.markdown(
-        """
+    st.markdown(f"""
     <div style="text-align: center; color: #666; font-size: 0.8em; margin-bottom: 1.5rem;">
-        A project by <strong>Amin Haghighatbin</strong> | Making electrochemical research more reproducible
+        A project by <strong>Amin Haghighatbin</strong> | Making electrochemical research more reproducible<br>
+        <span style="font-size: 0.7em; color: #888;">v{__version__}</span>
     </div>
-    """,
-        unsafe_allow_html=True,
-    )
+    """, unsafe_allow_html=True)
 
     ui.render_fair_info()
 
@@ -56,6 +56,16 @@ def main():
     with st.sidebar:
         st.header("📋 Progress")
         progress_container = st.container()
+
+        st.markdown("---")
+        with st.expander("ℹ️ About", expanded=False):
+            version_info = get_version_info()
+            st.write(f"**Version:** {version_info['version']}")
+            st.write(f"**Release:** {version_info['release_name']}")
+            st.write(f"**Date:** {version_info['release_date']}")
+            st.write(f"**Author:** {version_info['author']}")
+            st.markdown("[📖 User Guide](https://github.com/haghighatbin/echem-fairifier)")
+            st.markdown("[🐛 Report Issue](https://github.com/haghighatbin/echem-fairifier/issues)")
 
     # Main content area
     tab1, tab2, tab3 = st.tabs(["📁 Data Upload", "📝 Metadata", "📦 Export"])
