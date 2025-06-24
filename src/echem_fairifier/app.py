@@ -5,6 +5,7 @@ Making electrochemical data FAIR-compliant
 
 import streamlit as st
 import pandas as pd
+import numpy as np
 from io import BytesIO
 import zipfile
 from typing import Dict, Any
@@ -75,34 +76,117 @@ def main():
             st.session_state.uploaded_file = uploaded_file
 
             try:
-                # Validate and load data
-                if not uploaded_file.name.endswith(".csv"):
+                # Validate file type
+                if not uploaded_file.name.lower().endswith(".csv"):
                     st.error("❌ Please upload a CSV file.")
+                    st.info(
+                        "💡 Tip: Save your data as CSV format from Excel or other software."
+                    )
                     return
 
-                df = pd.read_csv(uploaded_file)
+                # Try to read the file with different encodings if needed
+                df = None
+                encodings_to_try = ["utf-8", "latin1", "cp1252", "iso-8859-1"]
 
+                for encoding in encodings_to_try:
+                    try:
+                        uploaded_file.seek(0)  # Reset file pointer
+                        df = pd.read_csv(uploaded_file, encoding=encoding)
+                        st.success(
+                            f"✅ File loaded successfully (encoding: {encoding})"
+                        )
+                        break
+                    except UnicodeDecodeError:
+                        continue
+                    except Exception as e:
+                        if encoding == encodings_to_try[-1]:  # Last encoding attempt
+                            raise e
+                        continue
+
+                if df is None:
+                    st.error(
+                        "❌ Could not read the file. Please check the file format."
+                    )
+                    return
+
+                # Basic data validation
                 if df.empty:
                     st.warning("⚠️ The uploaded file appears to be empty.")
+                    st.info("Please upload a file with data.")
                     return
+
+                # Check for at least some numeric data
+                numeric_cols = df.select_dtypes(include=[np.number]).columns
+                if len(numeric_cols) == 0:
+                    st.warning("⚠️ No numeric columns detected in your data.")
+                    st.info(
+                        "Make sure your measurement data (potential, current, etc.) are in numeric format."
+                    )
+                    st.write("**Detected columns:**", list(df.columns))
+                else:
+                    st.success(
+                        f"✅ Found {len(numeric_cols)} numeric columns for analysis"
+                    )
 
                 # Store dataframe in session state
                 st.session_state.df = df
 
-                # Show data preview (will be updated with correct technique in Tab 2)
-                with st.expander("📊 Quick Data Preview"):
-                    st.write(f"**Rows:** {len(df)} | **Columns:** {len(df.columns)}")
-                    st.write("**Column names:**", list(df.columns))
-                    if len(df) > 0:
-                        st.dataframe(df.head(5))
+                # Show data preview with error handling
+                try:
+                    ui.render_data_preview(df, "CV")  # Default to CV for preview
+                except Exception as plot_error:
+                    st.warning(f"⚠️ Preview generation issue: {str(plot_error)}")
+                    st.info(
+                        "Don't worry - you can still proceed with metadata generation!"
+                    )
 
-                st.success("✅ File uploaded successfully!")
+                    # Show basic data info as fallback
+                    with st.expander("📋 Basic Data Information"):
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            st.write(f"**Rows:** {len(df)}")
+                            st.write(f"**Columns:** {len(df.columns)}")
+                        with col2:
+                            st.write(f"**Numeric columns:** {len(numeric_cols)}")
+                            st.write(
+                                f"**File size:** {uploaded_file.size / 1024:.1f} KB"
+                            )
+
+                        st.write("**Column names:**", list(df.columns))
+                        st.dataframe(df.head())
+
+            except pd.errors.EmptyDataError:
+                st.error("❌ The file is empty or contains no data.")
+                st.info("Please upload a file with actual measurement data.")
+
+            except pd.errors.ParserError as e:
+                st.error(f"❌ File parsing error: {str(e)}")
+                st.info("Please check that your file is properly formatted CSV.")
+                st.markdown(
+                    """
+                **Common solutions:**
+                - Ensure data is separated by commas
+                - Check for extra commas or special characters
+                - Make sure column headers are in the first row
+                """
+                )
 
             except Exception as e:
-                st.error(f"❌ Error processing file: {str(e)}")
-                st.info(
-                    "Please ensure your file is a valid CSV with proper formatting."
-                )
+                st.error(f"❌ Unexpected error processing file: {str(e)}")
+                st.info("Please try again or contact support if the problem persists.")
+
+                # Debug information for development
+                if st.checkbox("Show debug information"):
+                    st.write("**Error details:**", str(e))
+                    st.write(
+                        "**File info:**",
+                        {
+                            "name": uploaded_file.name,
+                            "size": uploaded_file.size,
+                            "type": uploaded_file.type,
+                        },
+                    )
+
                 return
 
     # Tab 2: Metadata Configuration
@@ -136,35 +220,93 @@ def main():
         # Generate metadata
         if st.button("🔄 Generate Metadata", type="primary"):
             try:
-                dataset_info = {"filename": st.session_state.uploaded_file.name}
+                # Validate required inputs
+                if not technique:
+                    st.error("❌ Please select a technique.")
+                    return
+
+                if not all(
+                    [
+                        experimental_details.get("working_electrode"),
+                        experimental_details.get("reference_electrode"),
+                        experimental_details.get("electrolyte"),
+                    ]
+                ):
+                    st.error("❌ Please fill in all required experimental details.")
+                    return
+
+                dataset_info = {
+                    "filename": st.session_state.uploaded_file.name,
+                    "size_bytes": st.session_state.uploaded_file.size,
+                }
 
                 # Generate base metadata
-                metadata = metadata_gen.generate_metadata(
-                    technique=technique,
-                    technique_parameters=technique_parameters,
-                    experimental_details=all_experimental_details,
-                    dataset_info=dataset_info,
-                )
+                with st.spinner("Generating FAIR metadata..."):
+                    metadata = metadata_gen.generate_metadata(
+                        technique=technique,
+                        technique_parameters=technique_parameters,
+                        experimental_details=all_experimental_details,
+                        dataset_info=dataset_info,
+                    )
 
-                # Enrich with EMMO terms
-                metadata = emmo_integration.enrich_metadata_with_emmo(metadata)
+                # Enrich with EMMO terms (with error handling)
+                try:
+                    with st.spinner("Enriching with EMMO vocabulary..."):
+                        metadata = emmo_integration.enrich_metadata_with_emmo(metadata)
+                except Exception as emmo_error:
+                    st.warning(f"⚠️ EMMO enrichment had issues: {str(emmo_error)}")
+                    st.info(
+                        "Proceeding with basic metadata (EMMO features may be limited)"
+                    )
 
                 st.session_state.metadata = metadata
 
                 # Comprehensive validation
-                validation_results = validator.validate_metadata(metadata)
+                try:
+                    validation_results = validator.validate_metadata(metadata)
 
-                # Add EMMO validation
-                emmo_validation = emmo_integration.validate_metadata_terms(metadata)
-                if emmo_validation.get("suggestions"):
-                    validation_results["info"].extend(emmo_validation["suggestions"])
+                    # Add EMMO validation if available
+                    try:
+                        emmo_validation = emmo_integration.validate_metadata_terms(
+                            metadata
+                        )
+                        if emmo_validation.get("suggestions"):
+                            validation_results["info"].extend(
+                                emmo_validation["suggestions"]
+                            )
+                    except Exception as emmo_val_error:
+                        st.warning(f"⚠️ EMMO validation issue: {str(emmo_val_error)}")
 
-                st.session_state.validation_results = validation_results
+                    st.session_state.validation_results = validation_results
 
-                st.success("✅ Metadata generated successfully with EMMO enrichment!")
+                except Exception as val_error:
+                    st.warning(f"⚠️ Validation had issues: {str(val_error)}")
+                    # Continue with basic validation results
+                    st.session_state.validation_results = {
+                        "errors": [],
+                        "warnings": [
+                            "Validation system had issues - please review metadata manually"
+                        ],
+                        "info": [],
+                        "fair_score": 0.5,
+                        "completeness_score": 0.5,
+                    }
+
+                st.success("✅ Metadata generated successfully!")
+                st.balloons()
 
             except Exception as e:
                 st.error(f"❌ Error generating metadata: {str(e)}")
+                st.info("Please check your inputs and try again.")
+
+                # Debug information for development
+                if st.checkbox("Show debug information", key="debug_metadata"):
+                    st.write("**Error details:**", str(e))
+                    st.write("**Technique:**", technique)
+                    st.write("**Parameters:**", technique_parameters)
+                    import traceback
+
+                    st.code(traceback.format_exc())
 
     # Tab 3: Export and Preview
     with tab3:
@@ -233,22 +375,45 @@ def main():
         with col2:
             if st.button("📦 Create FAIR Bundle", type="primary"):
                 try:
-                    # Create ZIP bundle
-                    zip_buffer = create_fair_bundle(
-                        st.session_state.uploaded_file,
-                        yaml_str,
-                        st.session_state.metadata,
+                    with st.spinner("Creating FAIR bundle..."):
+                        # Create ZIP bundle
+                        zip_buffer = create_fair_bundle(
+                            st.session_state.uploaded_file,
+                            yaml_str,
+                            st.session_state.metadata,
+                        )
+
+                        st.success("✅ FAIR bundle created successfully!")
+
+                    # Generate filename with technique and experiment ID
+                    technique_name = st.session_state.metadata.get("technique", {}).get(
+                        "name", "unknown"
                     )
+                    exp_id = st.session_state.metadata.get("experiment_id", "unknown")[
+                        :8
+                    ]
+                    filename = f"fair_bundle_{technique_name.lower()}_{exp_id}.zip"
 
                     st.download_button(
                         label="⬇️ Download FAIR Bundle (.zip)",
                         data=zip_buffer,
-                        file_name=f"fair_bundle_{technique.lower()}_{metadata.get('experiment_id', 'unknown')[:8]}.zip",
+                        file_name=filename,
                         mime="application/zip",
+                        help="Download your complete FAIR data package",
                     )
 
                 except Exception as e:
                     st.error(f"❌ Error creating bundle: {str(e)}")
+                    st.info(
+                        "You can still download the metadata separately using the button above."
+                    )
+
+                    # Debug information
+                    if st.checkbox("Show bundle debug info", key="debug_bundle"):
+                        st.write("**Error details:**", str(e))
+                        import traceback
+
+                        st.code(traceback.format_exc())
 
     # Update progress sidebar
     update_progress_sidebar(progress_container)
@@ -260,23 +425,58 @@ def create_fair_bundle(
     """Create a ZIP bundle with data and metadata."""
 
     zip_buffer = BytesIO()
+    try:
+        # Create README content
+        readme_content = generate_readme(metadata)
 
-    # Create README content
-    readme_content = generate_readme(metadata)
-
-    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
-        # Add original data file
-        zip_file.writestr(uploaded_file.name, uploaded_file.getvalue())
-
-        # Add metadata
-        zip_file.writestr("metadata.yaml", yaml_str)
-
-        # Add README
-        zip_file.writestr("README.md", readme_content)
-
-        # Add citation file
+        # Create citation content
         citation_content = generate_citation(metadata)
-        zip_file.writestr("CITATION.cff", citation_content)
+
+        with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+            # Add original data file
+            try:
+                uploaded_file.seek(0)  # Reset file pointer
+                zip_file.writestr(uploaded_file.name, uploaded_file.getvalue())
+            except Exception as e:
+                st.warning(f"Issue adding data file to bundle: {str(e)}")
+                # Create a placeholder if original file can't be added
+                zip_file.writestr(
+                    "data_file_error.txt", f"Original file could not be added: {str(e)}"
+                )
+
+            # Add metadata
+            try:
+                zip_file.writestr("metadata.yaml", yaml_str)
+            except Exception as e:
+                st.warning(f"Issue adding metadata: {str(e)}")
+                # Add basic metadata as fallback
+                basic_metadata = f"# Metadata generation error\nError: {str(e)}\nTechnique: {metadata.get('technique', {}).get('name', 'Unknown')}"
+                zip_file.writestr("metadata_error.txt", basic_metadata)
+
+            # Add README
+            try:
+                zip_file.writestr("README.md", readme_content)
+            except Exception as e:
+                st.warning(f"Issue adding README: {str(e)}")
+                basic_readme = "# EChem FAIR Bundle\n\nThis bundle was generated by EChem FAIRifier.\nSome documentation could not be generated due to errors."
+                zip_file.writestr("README.md", basic_readme)
+
+            # Add citation file
+            try:
+                zip_file.writestr("CITATION.cff", citation_content)
+            except Exception as e:
+                st.warning(f"Issue adding citation: {str(e)}")
+                basic_citation = (
+                    f"# Citation information could not be generated\n# Error: {str(e)}"
+                )
+                zip_file.writestr("CITATION_error.txt", basic_citation)
+
+    except Exception as e:
+        st.error(f"Critical error creating ZIP file: {str(e)}")
+        # Create minimal ZIP with error information
+        with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+            error_info = f"Bundle creation failed: {str(e)}\nPlease contact support or try again."
+            zip_file.writestr("ERROR.txt", error_info)
 
     zip_buffer.seek(0)
     return zip_buffer
@@ -285,17 +485,19 @@ def create_fair_bundle(
 def generate_readme(metadata: Dict[str, Any]) -> str:
     """Generate README content for the FAIR bundle."""
 
-    technique_name = metadata.get("technique", {}).get("name", "Unknown")
-    created_date = metadata.get("created_date", "Unknown")[:10]
+    try:
+        technique_name = metadata.get("technique", {}).get("name", "Unknown")
+        created_date = metadata.get("created_date", "Unknown")[:10]
+        exp_id = metadata.get("experiment_id", "N/A")
 
-    readme = f"""# Electrochemical Data Bundle
+        readme = f"""# Electrochemical Data Bundle
 
 ## Overview
 This bundle contains FAIR-compliant electrochemical data generated using EChem FAIRifier.
 
 **Technique:** {technique_name}
 **Created:** {created_date}
-**ID:** {metadata.get('experiment_id', 'N/A')}
+**ID:** {exp_id}
 
 ## Files Included
 - `{metadata.get('dataset', {}).get('filename', 'data.csv')}` - Raw experimental data
@@ -306,7 +508,7 @@ This bundle contains FAIR-compliant electrochemical data generated using EChem F
 This data follows FAIR principles:
 - **Findable:** Unique identifier and rich metadata
 - **Accessible:** Open formats (CSV, YAML)
-- **Interoperable:** Standardised vocabulary and structure
+- **Interoperable:** Standardized vocabulary and structure
 - **Reusable:** Clear licensing and attribution
 
 ## Citation
@@ -318,27 +520,65 @@ Please see CITATION.cff for proper attribution.
 ---
 Generated by EChem FAIRifier v1.0
 """
+    except Exception as e:
+        readme = f"""# Electrochemical Data Bundle
+
+This bundle was generated by EChem FAIRifier, but some information could not be included due to errors.
+
+Error details: {str(e)}
+
+Please check the metadata.yaml file for experiment details.
+
+---
+Generated by EChem FAIRifier v1.0
+"""
+
     return readme
 
 
 def generate_citation(metadata: Dict[str, Any]) -> str:
     """Generate Citation File Format content."""
 
-    attribution = metadata.get("attribution", {})
+    try:
+        attribution = metadata.get("attribution", {})
+        technique_name = metadata.get("technique", {}).get("name", "Electrochemical")
 
-    cff_content = f"""cff-version: 1.2.0
+        # Handle name splitting safely
+        creator_name = attribution.get("creator", "Unknown")
+        if creator_name and creator_name != "Unknown":
+            name_parts = creator_name.strip().split()
+            if len(name_parts) >= 2:
+                family_name = name_parts[-1]
+                given_names = " ".join(name_parts[:-1])
+            else:
+                family_name = creator_name
+                given_names = ""
+        else:
+            family_name = "Unknown"
+            given_names = ""
+
+        cff_content = f"""cff-version: 1.2.0
 message: "If you use this dataset, please cite it as below."
 type: dataset
-title: "{metadata.get('technique', {}).get('name', 'Electrochemical')} measurement data"
+title: "{technique_name} measurement data"
 authors:
-- family-names: "{attribution.get('creator', 'Unknown').split()[-1] if attribution.get('creator') else 'Unknown'}"
-  given-names: "{' '.join(attribution.get('creator', 'Unknown').split()[:-1]) if attribution.get('creator') else 'Unknown'}"
+- family-names: "{family_name}"
+  given-names: "{given_names}"
   orcid: "{attribution.get('orcid', '')}"
   affiliation: "{attribution.get('institution', '')}"
 date-released: "{metadata.get('created_date', '')[:10]}"
 license: "{metadata.get('fair_compliance', {}).get('reusable', {}).get('license', 'Unknown')}"
 repository-code: "https://github.com/haghighatbin/echem-fairifier"
 """
+    except Exception as e:
+        cff_content = f"""cff-version: 1.2.0
+message: "Citation information could not be generated properly."
+type: dataset
+title: "Electrochemical measurement data"
+# Error in citation generation: {str(e)}
+# Please update this file manually with proper attribution
+"""
+
     return cff_content
 
 

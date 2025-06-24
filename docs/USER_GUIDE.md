@@ -13,7 +13,7 @@ Welcome to EChem FAIRifier! This guide will help you make your electrochemical d
 ## 🚀 Quick Start
 
 ### 1. Access the Tool
-Visit the [live demo](https://your-app-url.streamlit.app) or run locally:
+Visit the [live demo](https://echem-fairifier-aminhb.streamlit.app/) or run locally:
 
 ```bash
 git clone https://github.com/haghighatbin/echem-fairifier.git
@@ -145,7 +145,7 @@ Always provide:
 ### Recommended Information
 For better FAIR compliance:
 - **Creator name** and ORCID ID
-- **Institution** or organization
+- **Institution** or organisation
 - **Contact email** for inquiries
 - **Data license** (e.g., CC-BY-4.0)
 - **Related publications** (DOI)

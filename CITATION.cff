@@ -42,5 +42,5 @@ keywords:
   - ontology
 identifiers:
   - type: url
-    value: "https://your-streamlit-app-url.streamlit.app"
+    value: "https://echem-fairifier-aminhb.streamlit.app/"
     description: "Live demo of EChem FAIRifier"

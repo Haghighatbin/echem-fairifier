@@ -8,6 +8,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 from typing import Dict, Any, List, Optional, Tuple
 from ..config.techniques import ElectrochemicalTechniques, TechniqueParameter
+import re
+import numpy as np
 
 
 class UIComponents:
@@ -321,87 +323,248 @@ class UIComponents:
             st.write("**Columns found:**", list(df.columns))
 
         # Generate appropriate plot
-        fig = UIComponents._create_technique_plot(df, technique)
-        if fig:
-            st.plotly_chart(
-                fig,
-                use_container_width=True,
-                key=f"plot_{technique}_{hash(str(df.columns))}",
-            )
-        else:
-            st.info(
-                "Unable to generate plot. Please check column names match expected format."
-            )
+        try:
+            fig = UIComponents._create_technique_plot(df, technique)
+            if fig:
+                st.plotly_chart(
+                    fig,
+                    use_container_width=True,
+                    key=f"plot_{technique}_{hash(str(df.columns))}",
+                )
+            else:
+                # Show fallback plot if technique-specific plot fails
+                fallback_fig = UIComponents._create_fallback_plot(df)
+                if fallback_fig:
+                    st.plotly_chart(fallback_fig, use_container_width=True)
+                    st.info(
+                        "💡 Using generic plot - column names don't match expected patterns for "
+                        + technique
+                    )
+                else:
+                    st.info(
+                        "📊 Unable to generate plot - please check that your data contains numeric columns"
+                    )
+
+        except Exception as e:
+            st.warning(f"⚠️ Plotting error: {str(e)}")
+            st.info("Don't worry - you can still proceed with metadata generation!")
 
         # Show data sample
         with st.expander("🔍 Data Sample (First 10 rows)"):
-            st.dataframe(
-                df.head(10), key=f"dataframe_{technique}_{hash(str(df.shape))}"
-            )
+            try:
+                st.dataframe(df.head(10))
+            except Exception as e:
+                st.error(f"Error displaying data: {str(e)}")
+                st.write("**Raw data preview:**")
+                st.text(str(df.head(10)))
 
     @staticmethod
     def _create_technique_plot(df: pd.DataFrame, technique: str) -> Optional[go.Figure]:
-        """Create appropriate plot for the technique."""
+        """Create appropriate plot for the technique with robust error handling."""
+        if df.empty:
+            return None
+
         try:
-            if technique == "CV" and all(
-                col in df.columns for col in ["Potential (V)", "Current (A)"]
+            # Find columns using flexible pattern matching
+            columns = UIComponents._find_data_columns(df, technique)
+
+            if (
+                technique == "CV"
+                and columns.get("potential")
+                and columns.get("current")
             ):
                 fig = px.line(
                     df,
-                    x="Potential (V)",
-                    y="Current (A)",
+                    x=columns["potential"],
+                    y=columns["current"],
                     title="Cyclic Voltammogram",
                     labels={
-                        "Potential (V)": "Potential / V",
-                        "Current (A)": "Current / A",
+                        columns["potential"]: "Potential / V",
+                        columns["current"]: "Current / A",
                     },
                 )
 
-            elif technique == "EIS" and all(
-                col in df.columns for col in ["Z_real (Ohm)", "Z_imag (Ohm)"]
-            ):
+            elif technique == "EIS" and columns.get("z_real") and columns.get("z_imag"):
                 fig = px.scatter(
                     df,
-                    x="Z_real (Ohm)",
-                    y="Z_imag (Ohm)",
+                    x=columns["z_real"],
+                    y=columns["z_imag"],
                     title="Nyquist Plot",
-                    labels={"Z_real (Ohm)": "Z' / Ω", "Z_imag (Ohm)": "-Z'' / Ω"},
+                    labels={columns["z_real"]: "Z' / Ω", columns["z_imag"]: "-Z'' / Ω"},
                 )
+                # Invert y-axis for Nyquist plot convention
                 fig.update_yaxis(autorange="reversed")
 
-            elif technique == "CA" and all(
-                col in df.columns for col in ["Time (s)", "Current (A)"]
+            elif technique == "CA" and columns.get("time") and columns.get("current"):
+                fig = px.line(
+                    df,
+                    x=columns["time"],
+                    y=columns["current"],
+                    title="Chronoamperogram",
+                    labels={
+                        columns["time"]: "Time / s",
+                        columns["current"]: "Current / A",
+                    },
+                )
+
+            elif (
+                technique in ["DPV", "SWV"]
+                and columns.get("potential")
+                and columns.get("current")
             ):
                 fig = px.line(
                     df,
-                    x="Time (s)",
-                    y="Current (A)",
-                    title="Chronoamperogram",
-                    labels={"Time (s)": "Time / s", "Current (A)": "Current / A"},
-                )
-
-            elif all(col in df.columns for col in ["Potential (V)", "Current (A)"]):
-                # Generic electrochemical plot
-                fig = px.line(
-                    df,
-                    x="Potential (V)",
-                    y="Current (A)",
+                    x=columns["potential"],
+                    y=columns["current"],
                     title=f"{technique} Measurement",
                     labels={
-                        "Potential (V)": "Potential / V",
-                        "Current (A)": "Current / A",
+                        columns["potential"]: "Potential / V",
+                        columns["current"]: "Current / A",
                     },
                 )
-            else:
-                return None
 
+            else:
+                # Try generic electrochemical plot
+                return UIComponents._create_fallback_plot(df)
+
+            # Style the plot
             fig.update_layout(
-                template="plotly_white", showlegend=False, font=dict(size=12)
+                template="plotly_white",
+                showlegend=False,
+                font=dict(size=12),
+                height=400,
             )
             return fig
 
         except Exception as e:
-            st.error(f"Error creating plot: {str(e)}")
+            st.warning(f"Error creating {technique} plot: {str(e)}")
+            return None
+
+    @staticmethod
+    def _find_data_columns(df: pd.DataFrame, technique: str) -> Dict[str, str]:
+        """Find relevant columns using flexible pattern matching."""
+        columns = {}
+        col_names = df.columns.tolist()
+
+        # Define search patterns for different data types
+        patterns = {
+            "potential": [
+                r".*potential.*v.*",
+                r".*v.*potential.*",
+                r".*voltage.*",
+                r".*pot.*",
+                r".*v\b",
+                r".*e\b.*v.*",
+                r".*working.*potential.*",
+            ],
+            "current": [
+                r".*current.*a.*",
+                r".*a.*current.*",
+                r".*ampere.*",
+                r".*i\b",
+                r".*current.*",
+                r".*amp.*",
+            ],
+            "time": [
+                r".*time.*s.*",
+                r".*s.*time.*",
+                r".*second.*",
+                r".*t\b",
+                r".*time.*",
+                r".*sec.*",
+            ],
+            "frequency": [
+                r".*freq.*hz.*",
+                r".*hz.*freq.*",
+                r".*frequency.*",
+                r".*f\b.*hz.*",
+                r".*hertz.*",
+            ],
+            "z_real": [
+                r".*z.*real.*",
+                r".*real.*z.*",
+                r".*z.*r.*",
+                r".*zr.*",
+                r".*z.*ohm.*",
+                r".*impedance.*real.*",
+            ],
+            "z_imag": [
+                r".*z.*imag.*",
+                r".*imag.*z.*",
+                r".*z.*i.*",
+                r".*zi.*",
+                r".*z.*imaginary.*",
+                r".*impedance.*imag.*",
+            ],
+            "phase": [r".*phase.*", r".*deg.*", r".*angle.*", r".*phi.*"],
+        }
+
+        # Search for each column type
+        for col_type, pattern_list in patterns.items():
+            for col_name in col_names:
+                for pattern in pattern_list:
+                    if re.search(pattern, col_name.lower()):
+                        # Verify it's numeric data
+                        try:
+                            pd.to_numeric(df[col_name], errors="coerce")
+                            columns[col_type] = col_name
+                            break
+                        except:
+                            continue
+                if col_type in columns:
+                    break
+
+        return columns
+
+    @staticmethod
+    def _create_fallback_plot(df: pd.DataFrame) -> Optional[go.Figure]:
+        """Create a generic plot when technique-specific plotting fails."""
+        try:
+            # Find the first two numeric columns
+            numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+
+            if len(numeric_cols) >= 2:
+                x_col = numeric_cols[0]
+                y_col = numeric_cols[1]
+
+                fig = px.line(
+                    df,
+                    x=x_col,
+                    y=y_col,
+                    title="Data Preview",
+                    labels={x_col: x_col, y_col: y_col},
+                )
+
+                fig.update_layout(
+                    template="plotly_white",
+                    showlegend=False,
+                    font=dict(size=12),
+                    height=400,
+                )
+                return fig
+
+            elif len(numeric_cols) == 1:
+                # Single column - plot as index vs values
+                y_col = numeric_cols[0]
+                fig = px.line(
+                    df,
+                    y=y_col,
+                    title="Data Preview",
+                    labels={"index": "Data Point", y_col: y_col},
+                )
+
+                fig.update_layout(
+                    template="plotly_white",
+                    showlegend=False,
+                    font=dict(size=12),
+                    height=400,
+                )
+                return fig
+
+            return None
+
+        except Exception as e:
+            st.warning(f"Error creating fallback plot: {str(e)}")
             return None
 
     @staticmethod
