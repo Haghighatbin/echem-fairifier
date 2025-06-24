@@ -1,0 +1,46 @@
+cff-version: 1.2.0
+message: "If you use this software, please kindly cite it as below."
+type: software
+title: "EChem FAIRifier: Making electrochemical data FAIR-compliant"
+version: 1.0.0
+date-released: 2024-06-24
+url: "https://github.com/haghighatbin/echem-fairifier"
+repository-code: "https://github.com/haghighatbin/echem-fairifier"
+license: MIT
+authors:
+  - family-names: "Haghighatbin"
+    given-names: "Amin"
+    orcid: "https://orcid.org/0000-0001-6736-6419"
+    email: "aminhb@tutanota.com"
+    affiliation: ""
+preferred-citation:
+  type: software
+  title: "EChem FAIRifier: A tool for generating FAIR-compliant metadata for electrochemical experiments"
+  authors:
+    - family-names: "Haghighatbin"
+      given-names: "Amin"
+      orcid: "https://orcid.org/0000-0000-0000-0000"
+  date-published: 2024-06-24
+  url: "https://github.com/haghighatbin/echem-fairifier"
+  version: 1.0.0
+abstract: >-
+  EChem FAIRifier is an open-source tool designed to make electrochemical 
+  research data FAIR (Findable, Accessible, Interoperable, Reusable). 
+  The tool provides automated metadata generation, validation against 
+  international standards (EMMO), and comprehensive quality assessment 
+  for common electrochemical techniques including cyclic voltammetry, 
+  electrochemical impedance spectroscopy, and pulse techniques.
+keywords:
+  - electrochemistry
+  - FAIR data
+  - metadata
+  - data management
+  - research software
+  - voltammetry
+  - impedance spectroscopy
+  - EMMO
+  - ontology
+identifiers:
+  - type: url
+    value: "https://your-streamlit-app-url.streamlit.app"
+    description: "Live demo of EChem FAIRifier"

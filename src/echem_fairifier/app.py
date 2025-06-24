@@ -33,7 +33,7 @@ st.set_page_config(
 def main():
     """Main application function."""
     
-    # Initialize components
+    # Initialise components
     ui = UIComponents()
     metadata_gen = FAIRMetadataGenerator()
     validator = ECDataValidator()
@@ -41,6 +41,13 @@ def main():
     
     # Render header
     ui.render_header()
+
+    st.markdown("""
+    <div style="text-align: center; color: #666; font-size: 0.8em; margin-bottom: 1.5rem;">
+        A project by <strong>Amin Haghighatbin</strong> | Making electrochemical research more reproducible
+    </div>
+    """, unsafe_allow_html=True)
+
     ui.render_fair_info()
     
     # Sidebar for progress tracking
@@ -51,7 +58,7 @@ def main():
     # Main content area
     tab1, tab2, tab3 = st.tabs(["📁 Data Upload", "📝 Metadata", "📦 Export"])
     
-    # Initialize session state
+    # Initialise session state
     if 'uploaded_file' not in st.session_state:
         st.session_state.uploaded_file = None
     if 'metadata' not in st.session_state:
@@ -81,8 +88,12 @@ def main():
                 # Store dataframe in session state
                 st.session_state.df = df
                 
-                # Show data preview
-                ui.render_data_preview(df, "CV")  # Default to CV for preview
+                # Show data preview (will be updated with correct technique in Tab 2)
+                with st.expander("📊 Quick Data Preview"):
+                    st.write(f"**Rows:** {len(df)} | **Columns:** {len(df.columns)}")
+                    st.write("**Column names:**", list(df.columns))
+                    if len(df) > 0:
+                        st.dataframe(df.head(5))
                 
                 st.success("✅ File uploaded successfully!")
                 
@@ -290,7 +301,7 @@ This bundle contains FAIR-compliant electrochemical data generated using EChem F
 This data follows FAIR principles:
 - **Findable:** Unique identifier and rich metadata
 - **Accessible:** Open formats (CSV, YAML)
-- **Interoperable:** Standardized vocabulary and structure
+- **Interoperable:** Standardised vocabulary and structure
 - **Reusable:** Clear licensing and attribution
 
 ## Citation

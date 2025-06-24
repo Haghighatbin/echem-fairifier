@@ -180,8 +180,8 @@ class UIComponents:
             return st.number_input(
                 label,
                 value=float(param_def.default_value),
-                min_value=param_def.min_value,
-                max_value=param_def.max_value,
+                min_value=float(param_def.min_value),
+                max_value=float(param_def.max_value),
                 help=param_def.description,
                 format="%.6f" if param_def.default_value < 0.1 else "%.3f"
             )
@@ -310,13 +310,13 @@ class UIComponents:
         # Generate appropriate plot
         fig = UIComponents._create_technique_plot(df, technique)
         if fig:
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key=f"plot_{technique}_{hash(str(df.columns))}")
         else:
             st.info("Unable to generate plot. Please check column names match expected format.")
             
         # Show data sample
         with st.expander("🔍 Data Sample (First 10 rows)"):
-            st.dataframe(df.head(10))
+            st.dataframe(df.head(10), key=f"dataframe_{technique}_{hash(str(df.shape))}")
     
     @staticmethod
     def _create_technique_plot(df: pd.DataFrame, technique: str) -> Optional[go.Figure]:
