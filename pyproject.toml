@@ -1,0 +1,149 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "echem-fairifier"
+version = "1.0.0"
+description = "Making electrochemical data FAIR-compliant"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Amin Haghighatbin", email = "amin.haghighatbin@domain.com"}
+]
+maintainers = [
+    {name = "Amin Haghighatbin", email = "amin.haghighatbin@domain.com"}
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+keywords = [
+    "electrochemistry",
+    "FAIR",
+    "metadata",
+    "data-management",
+    "research-software",
+    "voltammetry",
+    "impedance-spectroscopy",
+    "EMMO",
+    "ontology"
+]
+requires-python = ">=3.9"
+dependencies = [
+    "streamlit>=1.28.0",
+    "pandas>=1.5.0",
+    "numpy>=1.21.0",
+    "PyYAML>=6.0",
+    "plotly>=5.0.0",
+    "jsonschema>=4.0.0",
+    "requests>=2.28.0",
+    "scipy>=1.9.0",
+    "openpyxl>=3.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=22.0.0",
+    "flake8>=5.0.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+]
+test = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/haghighatbin/echem-fairifier"
+Documentation = "https://github.com/haghighatbin/echem-fairifier/blob/main/README.md"
+Repository = "https://github.com/haghighatbin/echem-fairifier"
+"Bug Tracker" = "https://github.com/haghighatbin/echem-fairifier/issues"
+"Live Demo" = "https://your-app-url.streamlit.app"
+
+[project.scripts]
+echem-fairifier = "echem_fairifier.app:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+echem_fairifier = ["schemas/*.json"]
+
+# Black configuration
+[tool.black]
+line-length = 127
+target-version = ['py39']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+# pytest configuration
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "ui: marks tests that require UI interaction",
+]
+
+# Coverage configuration
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "setup.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+# MyPy configuration
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+no_implicit_optional = true
+show_error_codes = true
+
+# Flake8 configuration (in setup.cfg since flake8 doesn't support pyproject.toml yet)
