@@ -3,10 +3,11 @@ message: "If you use this software, please kindly cite it as below."
 type: software
 title: "EChem FAIRifier: Making electrochemical data FAIR-compliant"
 version: 1.0.0
-date-released: 2024-06-24
-url: "https://github.com/haghighatbin/echem-fairifier"
+date-released: 2025-05-25
+url: "https://doi.org/10.5281/zenodo.15737409"
 repository-code: "https://github.com/haghighatbin/echem-fairifier"
 license: MIT
+doi: 10.5281/zenodo.15737409
 authors:
   - family-names: "Haghighatbin"
     given-names: "Amin"
@@ -19,9 +20,10 @@ preferred-citation:
   authors:
     - family-names: "Haghighatbin"
       given-names: "Amin"
-      orcid: "https://orcid.org/0000-0000-0000-0000"
-  date-published: 2024-06-24
-  url: "https://github.com/haghighatbin/echem-fairifier"
+      orcid: "https://orcid.org/0000-0001-6736-6419"
+  date-published: 2025-05-25
+  url: "https://doi.org/10.5281/zenodo.15737409"
+  doi: 10.5281/zenodo.15737409
   version: 1.0.0
 abstract: >-
   EChem FAIRifier is an open-source tool designed to make electrochemical 
@@ -41,6 +43,9 @@ keywords:
   - EMMO
   - ontology
 identifiers:
+  - type: doi
+    value: "10.5281/zenodo.15737409"
+    description: "Zenodo DOI for this software"
   - type: url
     value: "https://echem-fairifier-aminhb.streamlit.app/"
     description: "Live demo of EChem FAIRifier"

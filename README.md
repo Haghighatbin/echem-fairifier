@@ -2,14 +2,15 @@
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://your-app-url.streamlit.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.9+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![CI](https://github.com/haghighatbin/echem-fairifier/workflows/CI/badge.svg)](https://github.com/haghighatbin/echem-fairifier/actions)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://github.com/haghighatbin/echem-fairifier/actions/workflows/ci.yml/badge.svg)](https://github.com/haghighatbin/echem-fairifier/actions)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15737409.svg)](https://doi.org/10.5281/zenodo.15737409)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![FAIR](https://img.shields.io/badge/FAIR-compliant-brightgreen.svg)](https://www.go-fair.org/fair-principles/)
 [![EMMO](https://img.shields.io/badge/EMMO-integrated-blue.svg)](https://emmo-repo.github.io/)
 [![Last Commit](https://img.shields.io/github/last-commit/haghighatbin/echem-fairifier.svg)](https://github.com/haghighatbin/echem-fairifier/commits/main)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/haghighatbin/echem-fairifier/releases)
-<!-- [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXX) -->
+
 
 > **Making electrochemical data FAIR-compliant**  
 > A tool for generating FAIR (Findable, Accessible, Interoperable, Reusable) metadata for electrochemical experiments.
@@ -190,6 +191,8 @@ If you use EChem FAIRifier in your research, please cite:
   year = {2024},
   url = {https://github.com/haghighatbin/echem-fairifier},
   version = {1.0.0}
+  doi = {10.5281/zenodo.15737409},
+  url = {https://doi.org/10.5281/zenodo.15737409}
 }
 ```
 
