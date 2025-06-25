@@ -18,9 +18,7 @@ def run_setup_test():
     """Run the basic setup test."""
     print("🔄 Running setup validation...")
     try:
-        result = subprocess.run(
-            [sys.executable, "test_setup.py"], capture_output=True, text=True
-        )
+        result = subprocess.run([sys.executable, "test_setup.py"], capture_output=True, text=True)
         if result.returncode == 0:
             print("✅ Setup test passed!")
             return True
@@ -60,9 +58,7 @@ def run_coverage_tests():
     print("🔄 Running tests with coverage...")
     try:
         # Install coverage if not available
-        subprocess.run(
-            [sys.executable, "-m", "pip", "install", "pytest-cov"], capture_output=True
-        )
+        subprocess.run([sys.executable, "-m", "pip", "install", "pytest-cov"], capture_output=True)
 
         result = subprocess.run(
             [

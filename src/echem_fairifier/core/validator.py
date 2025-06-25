@@ -132,23 +132,17 @@ class ECDataValidator:
 
         return results
 
-    def _validate_against_schema(
-        self, metadata: Dict[str, Any]
-    ) -> Dict[str, List[str]]:
+    def _validate_against_schema(self, metadata: Dict[str, Any]) -> Dict[str, List[str]]:
         """Validate metadata against JSON schema."""
         results = {"errors": [], "warnings": []}
 
         try:
             validate(instance=metadata, schema=self.schema)
-            results["warnings"].append(
-                "✅ Metadata structure is valid according to schema"
-            )
+            results["warnings"].append("✅ Metadata structure is valid according to schema")
         except ValidationError as e:
             results["errors"].append(f"Schema validation error: {e.message}")
         except Exception as e:
-            results["warnings"].append(
-                f"Schema validation could not be performed: {str(e)}"
-            )
+            results["warnings"].append(f"Schema validation could not be performed: {str(e)}")
 
         return results
 
@@ -175,21 +169,15 @@ class ECDataValidator:
         technique = metadata.get("technique", {})
         if technique.get("name") and technique.get("description"):
             score += 1
-            results["recommendations"].append(
-                "✅ F3: Rich metadata with technique details"
-            )
+            results["recommendations"].append("✅ F3: Rich metadata with technique details")
         else:
             results["warnings"].append("⚠️ F3: Add more descriptive metadata")
 
         if metadata.get("emmo_compliance", {}).get("terms_used"):
             score += 1
-            results["recommendations"].append(
-                "✅ F4: Uses controlled vocabulary (EMMO)"
-            )
+            results["recommendations"].append("✅ F4: Uses controlled vocabulary (EMMO)")
         else:
-            results["warnings"].append(
-                "💡 F4: Consider using EMMO vocabulary for better findability"
-            )
+            results["warnings"].append("💡 F4: Consider using EMMO vocabulary for better findability")
 
         # Accessible (A)
         max_score += 2
@@ -224,17 +212,13 @@ class ECDataValidator:
         license_info = fair_comp.get("reusable", {}).get("license")
         if license_info and license_info != "":
             score += 1
-            results["recommendations"].append(
-                f"✅ R1: License specified ({license_info})"
-            )
+            results["recommendations"].append(f"✅ R1: License specified ({license_info})")
         else:
             results["warnings"].append("⚠️ R1: Specify data license for reusability")
 
         if metadata.get("attribution", {}).get("institution"):
             score += 1
-            results["recommendations"].append(
-                "✅ R2: Institutional provenance provided"
-            )
+            results["recommendations"].append("✅ R2: Institutional provenance provided")
         else:
             results["warnings"].append("💡 R2: Add institutional information")
 
@@ -242,9 +226,7 @@ class ECDataValidator:
             score += 1
             results["recommendations"].append("✅ R3: Linked to publication")
         else:
-            results["warnings"].append(
-                "💡 R3: Link to related publications if available"
-            )
+            results["warnings"].append("💡 R3: Link to related publications if available")
 
         results["score"] = score / max_score if max_score > 0 else 0
         return results
@@ -289,23 +271,15 @@ class ECDataValidator:
         results["score"] = total_present / total_fields
 
         if results["score"] >= 0.8:
-            results["warnings"].append(
-                f"✅ High completeness score: {results['score']:.1%}"
-            )
+            results["warnings"].append(f"✅ High completeness score: {results['score']:.1%}")
         elif results["score"] >= 0.6:
-            results["warnings"].append(
-                f"⚠️ Moderate completeness: {results['score']:.1%} - consider adding more details"
-            )
+            results["warnings"].append(f"⚠️ Moderate completeness: {results['score']:.1%} - consider adding more details")
         else:
-            results["warnings"].append(
-                f"❌ Low completeness: {results['score']:.1%} - important information missing"
-            )
+            results["warnings"].append(f"❌ Low completeness: {results['score']:.1%} - important information missing")
 
         return results
 
-    def _validate_technique_parameters(
-        self, metadata: Dict[str, Any]
-    ) -> Dict[str, List[str]]:
+    def _validate_technique_parameters(self, metadata: Dict[str, Any]) -> Dict[str, List[str]]:
         """Validate technique-specific parameters."""
         results = {"errors": [], "warnings": []}
 
@@ -337,9 +311,7 @@ class ECDataValidator:
             if not isinstance(scan_rate, (int, float)) or scan_rate <= 0:
                 results["errors"].append("CV scan rate must be positive number")
             elif scan_rate > 10:
-                results["warnings"].append(
-                    "CV scan rate seems high (>10 V/s) - please verify"
-                )
+                results["warnings"].append("CV scan rate seems high (>10 V/s) - please verify")
 
         start_pot = params.get("start_potential")
         end_pot = params.get("end_potential")
@@ -361,15 +333,11 @@ class ECDataValidator:
         ac_amplitude = params.get("ac_amplitude")
         if ac_amplitude is not None:
             if ac_amplitude > 0.1:
-                results["warnings"].append(
-                    "EIS AC amplitude >0.1V may cause non-linear response"
-                )
+                results["warnings"].append("EIS AC amplitude >0.1V may cause non-linear response")
 
         return results
 
-    def _validate_pulse_parameters(
-        self, params: Dict, technique: str
-    ) -> Dict[str, List[str]]:
+    def _validate_pulse_parameters(self, params: Dict, technique: str) -> Dict[str, List[str]]:
         """Validate pulse technique parameters (DPV, SWV)."""
         results = {"errors": [], "warnings": []}
 
@@ -392,15 +360,11 @@ class ECDataValidator:
         step_times = params.get("step_times")
         if step_times and isinstance(step_times, list):
             if any(t < 0.1 for t in step_times):
-                results["warnings"].append(
-                    "CA step times <0.1s may be too short for steady-state"
-                )
+                results["warnings"].append("CA step times <0.1s may be too short for steady-state")
 
         return results
 
-    def validate_data_file(
-        self, df: pd.DataFrame, technique: str
-    ) -> Dict[str, List[str]]:
+    def validate_data_file(self, df: pd.DataFrame, technique: str) -> Dict[str, List[str]]:
         """
         Validate uploaded data file structure and content.
 
@@ -418,46 +382,34 @@ class ECDataValidator:
             results["errors"].append("Data file is empty")
             return results
 
-        results["info"].append(
-            f"Data file contains {len(df)} rows and {len(df.columns)} columns"
-        )
+        results["info"].append(f"Data file contains {len(df)} rows and {len(df.columns)} columns")
 
         # Check for expected columns
         expected_patterns = self.column_patterns.get(technique, [])
         if expected_patterns:
             matched_columns = []
             for pattern in expected_patterns:
-                matching_cols = [
-                    col for col in df.columns if re.search(pattern, col, re.IGNORECASE)
-                ]
+                matching_cols = [col for col in df.columns if re.search(pattern, col, re.IGNORECASE)]
                 if matching_cols:
                     matched_columns.extend(matching_cols)
                 else:
-                    results["warnings"].append(
-                        f"No column matching pattern '{pattern}' for {technique}"
-                    )
+                    results["warnings"].append(f"No column matching pattern '{pattern}' for {technique}")
 
             if matched_columns:
                 results["info"].append(f"Found expected columns: {matched_columns}")
             else:
-                results["warnings"].append(
-                    f"No expected column patterns found for {technique}"
-                )
+                results["warnings"].append(f"No expected column patterns found for {technique}")
 
         # Data quality checks
         numeric_cols = df.select_dtypes(include=["number"]).columns
 
         if len(numeric_cols) < 2:
-            results["warnings"].append(
-                "Expected at least 2 numeric columns for electrochemical data"
-            )
+            results["warnings"].append("Expected at least 2 numeric columns for electrochemical data")
 
         # Check for missing values
         missing_data = df.isnull().sum()
         if missing_data.any():
-            results["warnings"].append(
-                f"Missing values found in columns: {missing_data[missing_data > 0].to_dict()}"
-            )
+            results["warnings"].append(f"Missing values found in columns: {missing_data[missing_data > 0].to_dict()}")
 
         # Check for duplicate rows
         duplicates = df.duplicated().sum()
@@ -471,9 +423,7 @@ class ECDataValidator:
 
         return results
 
-    def generate_validation_report(
-        self, metadata: Dict, data_validation: Dict = None
-    ) -> str:
+    def generate_validation_report(self, metadata: Dict, data_validation: Dict = None) -> str:
         """Generate comprehensive validation report."""
 
         validation_results = self.validate_metadata(metadata)
@@ -560,13 +510,9 @@ class ECDataValidator:
             suggestions.append("Add contact email for data inquiries")
 
         # Licensing suggestions
-        license_info = (
-            metadata.get("fair_compliance", {}).get("reusable", {}).get("license")
-        )
+        license_info = metadata.get("fair_compliance", {}).get("reusable", {}).get("license")
         if not license_info:
-            suggestions.append(
-                "Specify a data license (e.g., CC-BY-4.0) to clarify usage terms"
-            )
+            suggestions.append("Specify a data license (e.g., CC-BY-4.0) to clarify usage terms")
 
         # EMMO suggestions
         if not metadata.get("emmo_compliance"):
@@ -591,17 +537,13 @@ def validate_metadata_comprehensive(metadata: Dict) -> Dict[str, List[str]]:
     return validator.validate_metadata(metadata)
 
 
-def validate_data_comprehensive(
-    df: pd.DataFrame, technique: str
-) -> Dict[str, List[str]]:
+def validate_data_comprehensive(df: pd.DataFrame, technique: str) -> Dict[str, List[str]]:
     """Validate data file with comprehensive checks."""
     validator = ECDataValidator()
     return validator.validate_data_file(df, technique)
 
 
-def generate_full_validation_report(
-    metadata: Dict, df: pd.DataFrame = None, technique: str = None
-) -> str:
+def generate_full_validation_report(metadata: Dict, df: pd.DataFrame = None, technique: str = None) -> str:
     """Generate complete validation report."""
     validator = ECDataValidator()
 

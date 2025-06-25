@@ -41,9 +41,7 @@ class TestFAIRMetadataGenerator:
 
     def test_generate_minimal_metadata(self):
         """Test minimal metadata generation."""
-        metadata = self.generator.create_minimal_metadata(
-            technique="CV", parameters={"scan_rate": 0.1}, filename="test.csv"
-        )
+        metadata = self.generator.create_minimal_metadata(technique="CV", parameters={"scan_rate": 0.1}, filename="test.csv")
 
         assert metadata["technique"] == "CV"
         assert metadata["technique_parameters"]["scan_rate"] == 0.1
@@ -158,12 +156,8 @@ class TestFAIRMetadataGenerator:
 
     def test_uuid_generation(self):
         """Test that unique IDs are generated."""
-        metadata1 = self.generator.generate_metadata(
-            "CV", {}, {"working_electrode": "test"}, {"filename": "test1.csv"}
-        )
-        metadata2 = self.generator.generate_metadata(
-            "CV", {}, {"working_electrode": "test"}, {"filename": "test2.csv"}
-        )
+        metadata1 = self.generator.generate_metadata("CV", {}, {"working_electrode": "test"}, {"filename": "test1.csv"})
+        metadata2 = self.generator.generate_metadata("CV", {}, {"working_electrode": "test"}, {"filename": "test2.csv"})
 
         # Should have different experiment IDs
         assert metadata1["experiment_id"] != metadata2["experiment_id"]

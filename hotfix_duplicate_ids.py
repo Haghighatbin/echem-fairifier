@@ -28,9 +28,7 @@ def fix_ui_components():
 
     # Fix 2: Add unique key to dataframe
     old_dataframe = r"st\.dataframe\(df\.head\(10\)\)"
-    new_dataframe = (
-        'st.dataframe(df.head(10), key=f"dataframe_{technique}_{hash(str(df.shape))}")'
-    )
+    new_dataframe = 'st.dataframe(df.head(10), key=f"dataframe_{technique}_{hash(str(df.shape))}")'
     content = re.sub(old_dataframe, new_dataframe, content)
 
     # Write back

@@ -67,9 +67,7 @@ def test_metadata_generator():
         generator = FAIRMetadataGenerator()
 
         # Test minimal metadata
-        metadata = generator.create_minimal_metadata(
-            technique="CV", parameters={"scan_rate": 0.1}, filename="test.csv"
-        )
+        metadata = generator.create_minimal_metadata(technique="CV", parameters={"scan_rate": 0.1}, filename="test.csv")
 
         print(f"✅ Generated minimal metadata with {len(metadata)} fields")
         return True
@@ -100,9 +98,7 @@ def test_validator():
         }
 
         results = validator.validate_metadata(sample_metadata)
-        print(
-            f"✅ Validation completed. FAIR score: {results.get('fair_score', 0):.1%}"
-        )
+        print(f"✅ Validation completed. FAIR score: {results.get('fair_score', 0):.1%}")
         return True
     except Exception as e:
         print(f"❌ Validator error: {e}")

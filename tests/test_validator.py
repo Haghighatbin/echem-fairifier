@@ -209,9 +209,7 @@ class TestECDataValidator:
             assert self.validator.validate_orcid(orcid), f"Should be valid: {orcid}"
 
         for orcid in invalid_orcids:
-            assert not self.validator.validate_orcid(
-                orcid
-            ), f"Should be invalid: {orcid}"
+            assert not self.validator.validate_orcid(orcid), f"Should be invalid: {orcid}"
 
     def test_doi_validation(self):
         """Test DOI format validation."""
@@ -238,9 +236,7 @@ class TestECDataValidator:
         assert result == "found_it"
 
         # Invalid path
-        result_none = self.validator._get_nested_value(
-            test_data, "level1.nonexistent.target"
-        )
+        result_none = self.validator._get_nested_value(test_data, "level1.nonexistent.target")
         assert result_none is None
 
         # Partial path
@@ -288,10 +284,7 @@ class TestECDataValidator:
 
         # Check for common suggestions
         suggestion_text = " ".join(suggestions).lower()
-        assert any(
-            keyword in suggestion_text
-            for keyword in ["orcid", "license", "email", "emmo"]
-        )
+        assert any(keyword in suggestion_text for keyword in ["orcid", "license", "email", "emmo"])
 
     def test_technique_specific_validation(self):
         """Test technique-specific parameter validation integration."""
@@ -313,9 +306,7 @@ class TestECDataValidator:
         }
 
         results = self.validator._validate_technique_parameters(cv_metadata)
-        assert (
-            len(results["warnings"]) > 0
-        )  # Should warn about high scan rate and narrow window
+        assert len(results["warnings"]) > 0  # Should warn about high scan rate and narrow window
 
     def test_pulse_technique_validation(self):
         """Test DPV and SWV parameter validation."""
@@ -395,9 +386,7 @@ class TestECDataValidator:
         assert len(results["warnings"]) >= 0  # Should handle gracefully
 
         # Test with very large dataset
-        large_df = pd.DataFrame(
-            {"Potential (V)": list(range(10000)), "Current (A)": [1e-6] * 10000}
-        )
+        large_df = pd.DataFrame({"Potential (V)": list(range(10000)), "Current (A)": [1e-6] * 10000})
 
         results = self.validator.validate_data_file(large_df, "CV")
         assert "info" in results

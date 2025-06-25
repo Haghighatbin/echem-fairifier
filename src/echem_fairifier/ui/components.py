@@ -160,9 +160,7 @@ class UIComponents:
 
         for param_name, param_def in parameters.items():
             with cols[col_idx % 2]:
-                custom_params[param_name] = UIComponents._render_parameter_input(
-                    param_name, param_def
-                )
+                custom_params[param_name] = UIComponents._render_parameter_input(param_name, param_def)
             col_idx += 1
 
         return custom_params
@@ -184,9 +182,7 @@ class UIComponents:
             try:
                 return [float(x.strip()) for x in val_str.split(",") if x.strip()]
             except ValueError:
-                st.error(
-                    f"Invalid format for {param_name}. Use comma-separated numbers."
-                )
+                st.error(f"Invalid format for {param_name}. Use comma-separated numbers.")
                 return param_def.default_value
         else:
             # Handle numeric parameters
@@ -256,15 +252,11 @@ class UIComponents:
     @staticmethod
     def render_attribution_fields() -> Dict[str, str]:
         """Render attribution and contact information fields."""
-        with st.expander(
-            "👤 Attribution & Contact (Optional but Recommended)", expanded=False
-        ):
+        with st.expander("👤 Attribution & Contact (Optional but Recommended)", expanded=False):
             col1, col2 = st.columns(2)
 
             with col1:
-                creator = st.text_input(
-                    "Creator/Researcher Name", help="Primary researcher or data creator"
-                )
+                creator = st.text_input("Creator/Researcher Name", help="Primary researcher or data creator")
 
                 institution = st.text_input(
                     "Institution/Organization",
@@ -278,9 +270,7 @@ class UIComponents:
                 )
 
             with col2:
-                contact_email = st.text_input(
-                    "Contact Email", help="Email for data inquiries"
-                )
+                contact_email = st.text_input("Contact Email", help="Email for data inquiries")
 
                 publication_doi = st.text_input(
                     "Related Publication DOI",
@@ -316,9 +306,7 @@ class UIComponents:
             with col2:
                 st.metric("Columns", len(df.columns))
             with col3:
-                st.metric(
-                    "File Size", f"{df.memory_usage(deep=True).sum() / 1024:.1f} KB"
-                )
+                st.metric("File Size", f"{df.memory_usage(deep=True).sum() / 1024:.1f} KB")
 
             st.write("**Columns found:**", list(df.columns))
 
@@ -336,14 +324,9 @@ class UIComponents:
                 fallback_fig = UIComponents._create_fallback_plot(df)
                 if fallback_fig:
                     st.plotly_chart(fallback_fig, use_container_width=True)
-                    st.info(
-                        "💡 Using generic plot - column names don't match expected patterns for "
-                        + technique
-                    )
+                    st.info("💡 Using generic plot - column names don't match expected patterns for " + technique)
                 else:
-                    st.info(
-                        "📊 Unable to generate plot - please check that your data contains numeric columns"
-                    )
+                    st.info("📊 Unable to generate plot - please check that your data contains numeric columns")
 
         except Exception as e:
             st.warning(f"⚠️ Plotting error: {str(e)}")
@@ -368,11 +351,7 @@ class UIComponents:
             # Find columns using flexible pattern matching
             columns = UIComponents._find_data_columns(df, technique)
 
-            if (
-                technique == "CV"
-                and columns.get("potential")
-                and columns.get("current")
-            ):
+            if technique == "CV" and columns.get("potential") and columns.get("current"):
                 fig = px.line(
                     df,
                     x=columns["potential"],
@@ -407,11 +386,7 @@ class UIComponents:
                     },
                 )
 
-            elif (
-                technique in ["DPV", "SWV"]
-                and columns.get("potential")
-                and columns.get("current")
-            ):
+            elif technique in ["DPV", "SWV"] and columns.get("potential") and columns.get("current"):
                 fig = px.line(
                     df,
                     x=columns["potential"],
@@ -589,7 +564,5 @@ class UIComponents:
 
         if not errors and not warnings:
             st.markdown('<div class="success-box">', unsafe_allow_html=True)
-            st.success(
-                "✅ **Metadata validation passed!** Your data meets FAIR standards."
-            )
+            st.success("✅ **Metadata validation passed!** Your data meets FAIR standards.")
             st.markdown("</div>", unsafe_allow_html=True)

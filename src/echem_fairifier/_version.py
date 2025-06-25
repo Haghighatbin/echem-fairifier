@@ -27,16 +27,18 @@ CHANGELOG = {
             "Citation-ready output (CITATION.cff)",
             "Robust data plotting with fallback options",
             "Multi-encoding CSV support",
-            "ZIP bundle export with documentation"
+            "ZIP bundle export with documentation",
         ],
         "fixes": [],
-        "breaking_changes": []
+        "breaking_changes": [],
     }
 }
+
 
 def get_version():
     """Get the current version string."""
     return __version__
+
 
 def get_version_info():
     """Get detailed version information."""
@@ -46,8 +48,9 @@ def get_version_info():
         "release_date": __release_date__,
         "release_name": __release_name__,
         "build": __build__,
-        "author": __author__
+        "author": __author__,
     }
+
 
 def print_version():
     """Print version information in a nice format."""

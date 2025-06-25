@@ -59,14 +59,10 @@ class FAIRMetadataGenerator:
             # Experimental Setup
             "experimental_setup": {
                 "working_electrode": experimental_details.get("working_electrode", ""),
-                "reference_electrode": experimental_details.get(
-                    "reference_electrode", ""
-                ),
+                "reference_electrode": experimental_details.get("reference_electrode", ""),
                 "counter_electrode": experimental_details.get("counter_electrode", ""),
                 "electrolyte": experimental_details.get("electrolyte", ""),
-                "temperature": experimental_details.get(
-                    "temperature", "Room temperature"
-                ),
+                "temperature": experimental_details.get("temperature", "Room temperature"),
                 "atmosphere": experimental_details.get("atmosphere", "Air"),
             },
             # Dataset Information
@@ -195,9 +191,7 @@ class FAIRMetadataGenerator:
         }
         return column_mapping.get(technique, ["Potential (V)", "Current (A)"])
 
-    def create_minimal_metadata(
-        self, technique: str, parameters: Dict[str, Any], filename: str
-    ) -> Dict[str, Any]:
+    def create_minimal_metadata(self, technique: str, parameters: Dict[str, Any], filename: str) -> Dict[str, Any]:
         """Create minimal metadata for quick generation."""
         return {
             "technique": technique,

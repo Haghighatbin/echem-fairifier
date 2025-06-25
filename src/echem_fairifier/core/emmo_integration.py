@@ -174,10 +174,7 @@ class EMMOElectrochemistryIntegration:
         filtered_terms = {}
 
         for key, term in self.local_terms.items():
-            if any(
-                keyword in term.label.lower() or keyword in term.definition.lower()
-                for keyword in keywords
-            ):
+            if any(keyword in term.label.lower() or keyword in term.definition.lower() for keyword in keywords):
                 filtered_terms[key] = term
 
         return filtered_terms
@@ -234,9 +231,7 @@ class EMMOElectrochemistryIntegration:
         if technique_name:
             emmo_term = self.validate_technique(technique_name)
             if emmo_term:
-                results["valid_terms"].append(
-                    f"Technique '{technique_name}' matches EMMO term: {emmo_term.label}"
-                )
+                results["valid_terms"].append(f"Technique '{technique_name}' matches EMMO term: {emmo_term.label}")
             else:
                 suggestions = self.suggest_terms(technique_name, "techniques")
                 if suggestions:
@@ -255,9 +250,7 @@ class EMMOElectrochemistryIntegration:
             if electrode_desc:
                 suggestions = self.suggest_terms(electrode_desc, "electrodes")
                 if suggestions:
-                    results["suggestions"].append(
-                        f"EMMO term available for {electrode_type}: {suggestions[0].label}"
-                    )
+                    results["suggestions"].append(f"EMMO term available for {electrode_type}: {suggestions[0].label}")
 
         # Check for general EMMO compliance
         if not results["valid_terms"] and not results["suggestions"]:
@@ -357,9 +350,7 @@ class EMMOElectrochemistryIntegration:
         report += "## 📚 About EMMO\n"
         report += "The Elementary Multiperspective Material Ontology (EMMO) provides "
         report += "standardised vocabulary for materials science and electrochemistry. "
-        report += (
-            "Using EMMO terms improves data interoperability and FAIR compliance.\n\n"
-        )
+        report += "Using EMMO terms improves data interoperability and FAIR compliance.\n\n"
         report += f"Ontology URL: {self.ontology_url}\n"
 
         return report

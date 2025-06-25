@@ -89,13 +89,9 @@ with col2:
                 f"{param.replace('_', ' ').title()} (comma-separated)",
                 ", ".join(map(str, default)),
             )
-            custom_params[param] = [
-                float(x.strip()) for x in val.split(",") if x.strip()
-            ]
+            custom_params[param] = [float(x.strip()) for x in val.split(",") if x.strip()]
         else:
-            custom_params[param] = st.number_input(
-                f"{param.replace('_', ' ').title()}", value=default
-            )
+            custom_params[param] = st.number_input(f"{param.replace('_', ' ').title()}", value=default)
 st.markdown("---")
 col3, col4 = st.columns([1, 1])
 if uploaded_file:
@@ -126,9 +122,7 @@ if uploaded_file:
                     y_label="Current / A",
                 )
         else:
-            st.info(
-                "CSV does not contain 'Potential (V)' and 'Current (A)' headers. Skipping plot."
-            )
+            st.info("CSV does not contain 'Potential (V)' and 'Current (A)' headers. Skipping plot.")
     except Exception as e:
         st.error(f"Error reading CSV for plotting: {e}")
 

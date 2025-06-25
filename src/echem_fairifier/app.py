@@ -43,12 +43,15 @@ def main():
     # Render header
     ui.render_header()
 
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <div style="text-align: center; color: #666; font-size: 0.8em; margin-bottom: 1.5rem;">
         A project by <strong>Amin Haghighatbin</strong> | Making electrochemical research more reproducible<br>
         <span style="font-size: 0.7em; color: #888;">v{__version__}</span>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     ui.render_fair_info()
 
@@ -89,9 +92,7 @@ def main():
                 # Validate file type
                 if not uploaded_file.name.lower().endswith(".csv"):
                     st.error("❌ Please upload a CSV file.")
-                    st.info(
-                        "💡 Tip: Save your data as CSV format from Excel or other software."
-                    )
+                    st.info("💡 Tip: Save your data as CSV format from Excel or other software.")
                     return
 
                 # Try to read the file with different encodings if needed
@@ -102,9 +103,7 @@ def main():
                     try:
                         uploaded_file.seek(0)  # Reset file pointer
                         df = pd.read_csv(uploaded_file, encoding=encoding)
-                        st.success(
-                            f"✅ File loaded successfully (encoding: {encoding})"
-                        )
+                        st.success(f"✅ File loaded successfully (encoding: {encoding})")
                         break
                     except UnicodeDecodeError:
                         continue
@@ -114,9 +113,7 @@ def main():
                         continue
 
                 if df is None:
-                    st.error(
-                        "❌ Could not read the file. Please check the file format."
-                    )
+                    st.error("❌ Could not read the file. Please check the file format.")
                     return
 
                 # Basic data validation
@@ -129,14 +126,10 @@ def main():
                 numeric_cols = df.select_dtypes(include=[np.number]).columns
                 if len(numeric_cols) == 0:
                     st.warning("⚠️ No numeric columns detected in your data.")
-                    st.info(
-                        "Make sure your measurement data (potential, current, etc.) are in numeric format."
-                    )
+                    st.info("Make sure your measurement data (potential, current, etc.) are in numeric format.")
                     st.write("**Detected columns:**", list(df.columns))
                 else:
-                    st.success(
-                        f"✅ Found {len(numeric_cols)} numeric columns for analysis"
-                    )
+                    st.success(f"✅ Found {len(numeric_cols)} numeric columns for analysis")
 
                 # Store dataframe in session state
                 st.session_state.df = df
@@ -146,9 +139,7 @@ def main():
                     ui.render_data_preview(df, "CV")  # Default to CV for preview
                 except Exception as plot_error:
                     st.warning(f"⚠️ Preview generation issue: {str(plot_error)}")
-                    st.info(
-                        "Don't worry - you can still proceed with metadata generation!"
-                    )
+                    st.info("Don't worry - you can still proceed with metadata generation!")
 
                     # Show basic data info as fallback
                     with st.expander("📋 Basic Data Information"):
@@ -158,9 +149,7 @@ def main():
                             st.write(f"**Columns:** {len(df.columns)}")
                         with col2:
                             st.write(f"**Numeric columns:** {len(numeric_cols)}")
-                            st.write(
-                                f"**File size:** {uploaded_file.size / 1024:.1f} KB"
-                            )
+                            st.write(f"**File size:** {uploaded_file.size / 1024:.1f} KB")
 
                         st.write("**Column names:**", list(df.columns))
                         st.dataframe(df.head())
@@ -265,9 +254,7 @@ def main():
                         metadata = emmo_integration.enrich_metadata_with_emmo(metadata)
                 except Exception as emmo_error:
                     st.warning(f"⚠️ EMMO enrichment had issues: {str(emmo_error)}")
-                    st.info(
-                        "Proceeding with basic metadata (EMMO features may be limited)"
-                    )
+                    st.info("Proceeding with basic metadata (EMMO features may be limited)")
 
                 st.session_state.metadata = metadata
 
@@ -277,13 +264,9 @@ def main():
 
                     # Add EMMO validation if available
                     try:
-                        emmo_validation = emmo_integration.validate_metadata_terms(
-                            metadata
-                        )
+                        emmo_validation = emmo_integration.validate_metadata_terms(metadata)
                         if emmo_validation.get("suggestions"):
-                            validation_results["info"].extend(
-                                emmo_validation["suggestions"]
-                            )
+                            validation_results["info"].extend(emmo_validation["suggestions"])
                     except Exception as emmo_val_error:
                         st.warning(f"⚠️ EMMO validation issue: {str(emmo_val_error)}")
 
@@ -294,9 +277,7 @@ def main():
                     # Continue with basic validation results
                     st.session_state.validation_results = {
                         "errors": [],
-                        "warnings": [
-                            "Validation system had issues - please review metadata manually"
-                        ],
+                        "warnings": ["Validation system had issues - please review metadata manually"],
                         "info": [],
                         "fair_score": 0.5,
                         "completeness_score": 0.5,
@@ -359,9 +340,7 @@ def main():
 
             exp_setup = metadata.get("experimental_setup", {})
             st.write("**Experimental Setup:**")
-            st.write(
-                f"• Working Electrode: {exp_setup.get('working_electrode', 'N/A')}"
-            )
+            st.write(f"• Working Electrode: {exp_setup.get('working_electrode', 'N/A')}")
             st.write(f"• Electrolyte: {exp_setup.get('electrolyte', 'N/A')}")
 
             attribution = metadata.get("attribution", {})
@@ -396,12 +375,8 @@ def main():
                         st.success("✅ FAIR bundle created successfully!")
 
                     # Generate filename with technique and experiment ID
-                    technique_name = st.session_state.metadata.get("technique", {}).get(
-                        "name", "unknown"
-                    )
-                    exp_id = st.session_state.metadata.get("experiment_id", "unknown")[
-                        :8
-                    ]
+                    technique_name = st.session_state.metadata.get("technique", {}).get("name", "unknown")
+                    exp_id = st.session_state.metadata.get("experiment_id", "unknown")[:8]
                     filename = f"fair_bundle_{technique_name.lower()}_{exp_id}.zip"
 
                     st.download_button(
@@ -414,9 +389,7 @@ def main():
 
                 except Exception as e:
                     st.error(f"❌ Error creating bundle: {str(e)}")
-                    st.info(
-                        "You can still download the metadata separately using the button above."
-                    )
+                    st.info("You can still download the metadata separately using the button above.")
 
                     # Debug information
                     if st.checkbox("Show bundle debug info", key="debug_bundle"):
@@ -429,9 +402,7 @@ def main():
     update_progress_sidebar(progress_container)
 
 
-def create_fair_bundle(
-    uploaded_file, yaml_str: str, metadata: Dict[str, Any]
-) -> BytesIO:
+def create_fair_bundle(uploaded_file, yaml_str: str, metadata: Dict[str, Any]) -> BytesIO:
     """Create a ZIP bundle with data and metadata."""
 
     zip_buffer = BytesIO()
@@ -450,9 +421,7 @@ def create_fair_bundle(
             except Exception as e:
                 st.warning(f"Issue adding data file to bundle: {str(e)}")
                 # Create a placeholder if original file can't be added
-                zip_file.writestr(
-                    "data_file_error.txt", f"Original file could not be added: {str(e)}"
-                )
+                zip_file.writestr("data_file_error.txt", f"Original file could not be added: {str(e)}")
 
             # Add metadata
             try:
@@ -476,9 +445,7 @@ def create_fair_bundle(
                 zip_file.writestr("CITATION.cff", citation_content)
             except Exception as e:
                 st.warning(f"Issue adding citation: {str(e)}")
-                basic_citation = (
-                    f"# Citation information could not be generated\n# Error: {str(e)}"
-                )
+                basic_citation = f"# Citation information could not be generated\n# Error: {str(e)}"
                 zip_file.writestr("CITATION_error.txt", basic_citation)
 
     except Exception as e:

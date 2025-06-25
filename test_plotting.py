@@ -53,9 +53,7 @@ def create_test_datasets():
             "Z_real (Ohm)": 100 + 50 / np.sqrt(frequencies),
             "Z_imag (Ohm)": -20 * np.sqrt(frequencies),
             "Phase (deg)": (
-                -np.arctan(datasets["eis"]["Z_imag"] / datasets["eis"]["Z_real"])
-                * 180
-                / np.pi
+                -np.arctan(datasets["eis"]["Z_imag"] / datasets["eis"]["Z_real"]) * 180 / np.pi
                 if "eis" in datasets
                 else np.zeros(30)
             ),
@@ -76,8 +74,7 @@ def create_test_datasets():
     datasets["generic"] = pd.DataFrame(
         {
             "X_data": np.linspace(0, 10, 100),
-            "Y_measurement": np.sin(np.linspace(0, 10, 100))
-            + np.random.normal(0, 0.1, 100),
+            "Y_measurement": np.sin(np.linspace(0, 10, 100)) + np.random.normal(0, 0.1, 100),
         }
     )
 
@@ -220,9 +217,7 @@ def main():
 
         success_rate = (successful_plots / total_tests) * 100 if total_tests > 0 else 0
 
-        print(
-            f"✅ {successful_plots}/{total_tests} tests created plots ({success_rate:.1f}%)"
-        )
+        print(f"✅ {successful_plots}/{total_tests} tests created plots ({success_rate:.1f}%)")
 
         if success_rate >= 80:
             print("🎉 Plotting system is working well!")
