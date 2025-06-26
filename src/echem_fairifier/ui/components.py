@@ -63,7 +63,7 @@ class UIComponents:
         )
 
         st.markdown('<div class="main-header">', unsafe_allow_html=True)
-        st.title("⚡ EChem FAIRifier")
+        st.title("EChem FAIRifier")
         st.markdown("</div>", unsafe_allow_html=True)
         st.markdown(
             '<div class="subtitle">Making electrochemical data FAIR-compliant</div>',

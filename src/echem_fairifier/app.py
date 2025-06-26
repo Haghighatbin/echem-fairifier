@@ -2,6 +2,7 @@
 EChem FAIRifier - Main Streamlit Application
 Making electrochemical data FAIR-compliant
 """
+
 import sys
 import os
 from pathlib import Path
@@ -17,13 +18,34 @@ from io import BytesIO
 import zipfile
 from typing import Dict, Any
 
-# Import our custom modules
 from src.echem_fairifier.core.metadata_generator import FAIRMetadataGenerator
 from src.echem_fairifier.core.validator import ECDataValidator
 from src.echem_fairifier.core.emmo_integration import EMMOElectrochemistryIntegration
 from src.echem_fairifier.ui.components import UIComponents
 from src.echem_fairifier._version import __version__, get_version_info
 
+
+# Hide Streamlit style elements
+hide_streamlit_style = """
+<style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+.stApp > header {height: 0px;}
+div[data-testid="stToolbar"] {visibility: hidden;}
+</style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+st.markdown(
+    """
+    <div style="text-align: center; padding: 10px;">
+        <h1>EChem FAIRifier</h1>
+        <p><em>Making electrochemical data FAIR-compliant</em></p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 # Page configuration
 st.set_page_config(
