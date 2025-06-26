@@ -30,6 +30,10 @@ class UIComponents:
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+        .main-header h1 {
+            text-align: center !important;
+            margin: 0 auto;
+        }
         .subtitle {
             text-align: center;
             color: #666;

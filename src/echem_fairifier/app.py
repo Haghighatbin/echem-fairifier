@@ -24,20 +24,10 @@ from src.echem_fairifier.ui.components import UIComponents
 from src.echem_fairifier._version import __version__, get_version_info
 
 
-# Hide Streamlit style elements
-hide_streamlit_style = """
-<style>
-header {visibility: hidden;}
-.stApp > header {height: 0px;}
-div[data-testid="stToolbar"] {visibility: hidden;}
-</style>
-"""
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-
-
 # Page configuration
 st.set_page_config(
     page_title="EChem FAIRifier",
+    page_icon=None,
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items={
