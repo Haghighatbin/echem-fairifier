@@ -22,7 +22,7 @@ from src.echem_fairifier.core.metadata_generator import FAIRMetadataGenerator
 from src.echem_fairifier.core.validator import ECDataValidator
 from src.echem_fairifier.core.emmo_integration import EMMOElectrochemistryIntegration
 from src.echem_fairifier.ui.components import UIComponents
-from echem_fairifier._version import __version__, get_version_info
+from src.echem_fairifier._version import __version__, get_version_info
 
 
 # Page configuration
