@@ -1,0 +1,7 @@
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "streamlit run src/echem_fairifier/app.py --server.port $PORT --server.address 0.0.0.0"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
