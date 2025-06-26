@@ -4,7 +4,6 @@ Making electrochemical data FAIR-compliant
 """
 
 import sys
-import os
 from pathlib import Path
 
 current_dir = Path(__file__).parent
@@ -28,8 +27,6 @@ from src.echem_fairifier._version import __version__, get_version_info
 # Hide Streamlit style elements
 hide_streamlit_style = """
 <style>
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
 header {visibility: hidden;}
 .stApp > header {height: 0px;}
 div[data-testid="stToolbar"] {visibility: hidden;}
@@ -37,15 +34,6 @@ div[data-testid="stToolbar"] {visibility: hidden;}
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-st.markdown(
-    """
-    <div style="text-align: center; padding: 10px;">
-        <h1>EChem FAIRifier</h1>
-        <p><em>Making electrochemical data FAIR-compliant</em></p>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
 
 # Page configuration
 st.set_page_config(
