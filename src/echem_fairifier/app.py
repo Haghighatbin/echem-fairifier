@@ -20,6 +20,7 @@ src_dir = current_dir.parent.parent
 sys.path.insert(0, str(src_dir))
 
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 from io import BytesIO
@@ -46,10 +47,17 @@ st.set_page_config(
     },
 )
 
-# Google Search Console verification
-st.markdown("""
-<meta name="google-site-verification" content="jWCTQ7neYkPSHsLkhNcqzHEN9d9-bYzmKUX3SYmE_T4" />
-""", unsafe_allow_html=True)
+# Google Search Console verification - inject into head
+components.html("""
+<script>
+(function() {
+    var meta = document.createElement('meta');
+    meta.name = 'google-site-verification';
+    meta.content = 'jWCTQ7neYkPSHsLkhNcqzHEN9d9-bYzmKUX3SYmE_T4';
+    document.getElementsByTagName('head')[0].appendChild(meta);
+})();
+</script>
+""", height=0)
 
 def show_post_download_help():
     with st.expander("📦 What to do with your FAIR bundle"):
