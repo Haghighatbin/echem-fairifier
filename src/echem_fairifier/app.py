@@ -46,6 +46,10 @@ st.set_page_config(
     },
 )
 
+# Google Search Console verification
+st.markdown("""
+<meta name="google-site-verification" content="jWCTQ7neYkPSHsLkhNcqzHEN9d9-bYzmKUX3SYmE_T4" />
+""", unsafe_allow_html=True)
 
 def show_post_download_help():
     with st.expander("📦 What to do with your FAIR bundle"):
