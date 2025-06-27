@@ -62,7 +62,7 @@ By making electrochemical data FAIR, we're building the foundation for next-gene
 ## 🚀 Quick Start
 
 ### Try Online (Recommended)
-Visit the **[Live Demo](https://your-app-url.streamlit.app)** - no installation required!
+Visit the **[Live Demo](https://echem-fairifier.up.railway.app)** - no installation required!
 
 ### Local Installation
 ```bash
@@ -240,7 +240,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**[🚀 Try EChem FAIRifier Now](https://your-app-url.streamlit.app)**
+**[🚀 Try EChem FAIRifier Now](https://echem-fairifier.up.railway.app)**
 
 *Making electrochemical research more reproducible, one dataset at a time.*
 

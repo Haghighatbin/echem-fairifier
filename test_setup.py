@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-Quick test to verify the Phase 3 & 4 setup works correctly.
-Run this before starting the Streamlit app.
-"""
 import os
 import sys
 from pathlib import Path

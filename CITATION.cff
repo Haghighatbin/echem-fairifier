@@ -47,5 +47,5 @@ identifiers:
     value: "10.5281/zenodo.15737409"
     description: "Zenodo DOI for this software"
   - type: url
-    value: "https://echem-fairifier-aminhb.streamlit.app/"
+    value: "https://echem-fairifier.up.railway.app"
     description: "Live demo of EChem FAIRifier"

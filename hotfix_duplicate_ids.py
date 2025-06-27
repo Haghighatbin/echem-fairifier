@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 Hotfix for Streamlit duplicate element ID error.
-Run this to automatically fix the duplicate ID issues.
 """
 
 import re
@@ -21,12 +20,12 @@ def fix_ui_components():
     with open(ui_file, "r", encoding="utf-8") as f:
         content = f.read()
 
-    # Fix 1: Add unique key to plotly_chart
+    # Fix 1:  unique key to plotly_chart
     old_plotly = r"st\.plotly_chart\(fig, use_container_width=True\)"
     new_plotly = 'st.plotly_chart(fig, use_container_width=True, key=f"plot_{technique}_{hash(str(df.columns))}")'
     content = re.sub(old_plotly, new_plotly, content)
 
-    # Fix 2: Add unique key to dataframe
+    # Fix 2: unique key to dataframe
     old_dataframe = r"st\.dataframe\(df\.head\(10\)\)"
     new_dataframe = 'st.dataframe(df.head(10), key=f"dataframe_{technique}_{hash(str(df.shape))}")'
     content = re.sub(old_dataframe, new_dataframe, content)

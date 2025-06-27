@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 Entry point for EChem FAIRifier Streamlit application.
-Run this file to start the application.
 """
 
 import sys

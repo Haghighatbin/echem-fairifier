@@ -1,6 +1,15 @@
 """
 EChem FAIRifier - Main Streamlit Application
 Making electrochemical data FAIR-compliant
+
+EChem FAIRifier transforms raw electrochemical data
+into FAIR-compliant datasets with comprehensive metadata,
+automated validation, and  documentation. 
+Built for the electrochemistry community to improve data
+sharing, reproducibility, and collaboration.
+
+Developer: Amin Haghighatbin
+Date: 210.6.2025
 """
 
 import sys
