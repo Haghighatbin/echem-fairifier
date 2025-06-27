@@ -47,6 +47,28 @@ st.set_page_config(
 )
 
 
+def show_post_download_help():
+    with st.expander("📦 What to do with your FAIR bundle"):
+        st.markdown(
+            """
+        Your download contains everything for data sharing:
+        
+        **🚀 Quick Actions:**
+        - **Upload to Zenodo** → Get a DOI for citations
+        - **Share with collaborators** → Include entire ZIP
+        - **Submit to journals** → Use generated citations
+        
+        **📁 Bundle Contents:**
+        - `data/` → Your processed datasets
+        - `metadata/` → FAIR-compliant descriptions  
+        - `documentation/` → README and methodology
+        - `visualisations/` → **💡 Tip:** Add your own publication-ready plots before submitting to repositories
+        
+        **Need help?** Check our [User Guide](https://github.com/haghighatbin/echem-fairifier/blob/main/docs/USER_GUIDE.md)
+        """
+        )
+
+
 def main():
     """Main application function."""
 
@@ -82,7 +104,7 @@ def main():
             st.write(f"**Version:** {version_info['version']}")
             st.write(f"**Release:** {version_info['release_name']}")
             st.write(f"**Date:** {version_info['release_date']}")
-            st.write(f"**Author:** {version_info['author']}")
+            st.write(f"**Developer:** {version_info['author']}")
             st.markdown("[📖 User Guide](https://github.com/haghighatbin/echem-fairifier)")
             st.markdown("[🐛 Report Issue](https://github.com/haghighatbin/echem-fairifier/issues)")
 
@@ -402,6 +424,7 @@ def main():
                         mime="application/zip",
                         help="Download your complete FAIR data package",
                     )
+                    show_post_download_help()
 
                 except Exception as e:
                     st.error(f"❌ Error creating bundle: {str(e)}")
@@ -499,7 +522,7 @@ This bundle contains FAIR-compliant electrochemical data generated using EChem F
 This data follows FAIR principles:
 - **Findable:** Unique identifier and rich metadata
 - **Accessible:** Open formats (CSV, YAML)
-- **Interoperable:** Standardized vocabulary and structure
+- **Interoperable:** Standardised vocabulary and structure
 - **Reusable:** Clear licensing and attribution
 
 ## Citation

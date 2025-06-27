@@ -6,7 +6,7 @@ __version__ = "1.0.0"
 __version_info__ = (1, 0, 0)
 
 # Release information
-__release_date__ = "2024-06-24"
+__release_date__ = "2025-06-24"
 __release_name__ = "First Release"
 
 # Build information
@@ -17,7 +17,7 @@ __email__ = "aminhb@tutanota.com"
 # Version history and changelog
 CHANGELOG = {
     "1.0.0": {
-        "date": "2024-06-24",
+        "date": "2025-06-24",
         "name": "First Release",
         "features": [
             "Complete FAIR metadata generation for CV, EIS, DPV, SWV, CA",

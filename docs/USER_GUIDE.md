@@ -2,7 +2,7 @@
 
 Welcome to EChem FAIRifier! This guide will help you make your electrochemical data FAIR-compliant.
 
-## 🎯 What is FAIR Data?
+## What is FAIR Data?
 
 **FAIR** stands for:
 - **F**indable: Easy to locate and identify with unique identifiers
@@ -13,7 +13,7 @@ Welcome to EChem FAIRifier! This guide will help you make your electrochemical d
 ## 🚀 Quick Start
 
 ### 1. Access the Tool
-Visit the [live demo](https://echem-fairifier-aminhb.streamlit.app/) or run locally:
+Visit the [live demo](https://echem-fairifier.up.railway.app/) or run locally:
 
 ```bash
 git clone https://github.com/haghighatbin/echem-fairifier.git
@@ -158,7 +158,7 @@ For better FAIR compliance:
 - Credit funding sources
 - Link to related publications
 
-## 🎨 Using the Interface
+## Using the Interface
 
 ### Navigation
 The app has three main tabs:
@@ -294,7 +294,7 @@ Common experimental setups:
 - **Minimal viable** for quick sharing
 - **Publication-ready** for journal submission
 
-## 🌟 Advanced Features
+## Advanced Features
 
 ### Batch Processing
 For multiple files:
@@ -339,7 +339,7 @@ For multiple files:
 
 ---
 
-## 💡 Tips for Success
+## Tips for Success
 
 1. **Start early** - Consider FAIR principles when designing experiments
 2. **Be consistent** - Use standard naming and formatting
