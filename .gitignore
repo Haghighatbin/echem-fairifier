@@ -1,4 +1,4 @@
-# Byte-compiled / optimized / DLL files
+# Byte-compiled / optimised / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
@@ -28,8 +28,6 @@ share/python-wheels/
 MANIFEST
 
 # PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
 
@@ -47,6 +45,9 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+hotfix_duplicate_ids.py
+test_plotting.py  
+test_setup.py
 
 # Environments
 .env

@@ -1,6 +1,6 @@
-# ⚡ EChem FAIRifier
+# EChem FAIRifier
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://your-app-url.streamlit.app)
+[![Live Demo](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://echem-fairifier.up.railway.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/haghighatbin/echem-fairifier/actions/workflows/ci.yml/badge.svg)](https://github.com/haghighatbin/echem-fairifier/actions)
@@ -11,53 +11,23 @@
 [![Last Commit](https://img.shields.io/github/last-commit/haghighatbin/echem-fairifier.svg)](https://github.com/haghighatbin/echem-fairifier/commits/main)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/haghighatbin/echem-fairifier/releases)
 
-
 > **Making electrochemical data FAIR-compliant**  
 > A tool for generating FAIR (Findable, Accessible, Interoperable, Reusable) metadata for electrochemical experiments.
 
-##  Overview
+## Keywords
+FAIR data, electrochemistry, metadata generation, cyclic voltammetry, electrochemical impedance spectroscopy, differential pulse voltammetry, square wave voltammetry, chronoamperometry, EMMO ontology, scientific data management, research reproducibility
 
-EChem FAIRifier transforms raw electrochemical data into FAIR-compliant datasets with comprehensive metadata, automated validation, and  documentation. Built for the electrochemistry community to improve data sharing, reproducibility, and collaboration.
-### Why FAIR Data Matters for Electrochemistry
+## Use Cases
+- Making electrochemical research data FAIR-compliant
+- Automated metadata generation for CV, EIS, DPV, SWV, CA experiments
+- Research data management for electrochemistry laboratories
+- Preparing data for scientific repositories and publications
 
-Electrochemical research generates vast amounts of complex, multi-dimensional data that is often siloed in individual labs or stored with insufficient metadata. This creates significant barriers to scientific progress, data reuse, and collaborative research. EChem FAIRifier addresses these challenges by:
+## Overview
 
-- **Preserving Scientific Knowledge**: Preventing data loss through standardised documentation and persistent identifiers
-- **Enabling Data Reuse**: Making datasets discoverable and understandable years after collection
-- **Supporting Regulatory Compliance**: Meeting requirements from funding agencies (NSF, NIH, EU) for FAIR data management
-- **Accelerating AI/ML Research**: Providing machine-readable metadata essential for training electrochemical AI models and automated data analysis
-- **Facilitating Meta-Studies**: Enabling large-scale comparative analyses across different labs, techniques, and materials
-- **Improving Reproducibility**: Ensuring experiments can be understood, validated, and replicated by the global research community
+**EChem FAIRifier** transforms raw electrochemical data into FAIR-compliant datasets with comprehensive metadata, automated validation, and complete documentation. Built for the electrochemistry community to improve data sharing, reproducibility, and collaboration.
 
-By making electrochemical data FAIR, we're building the foundation for next-generation data-driven discoveries in energy storage, corrosion science, biosensors, and materials characterisation.
-
-##  Key Features
-
-###  **Technique Support**
-- **Cyclic Voltammetry (CV)** - Full parameter validation and visualisation
-- **Electrochemical Impedance Spectroscopy (EIS)** - Nyquist plot generation
-- **Differential Pulse Voltammetry (DPV)** - Pulse parameter optimisation
-- **Square Wave Voltammetry (SWV)** - Frequency domain analysis
-- **Chronoamperometry (CA)** - Time-based measurements
-
-###  **FAIR Compliance**
-- **Findable:** Unique identifiers, rich metadata, controlled vocabularies
-- **Accessible:** Open formats (CSV, YAML), standard protocols
-- **Interoperable:** EMMO ontology integration, JSON schema validation
-- **Reusable:** Clear licensing, attribution, comprehensive documentation
-
-###  **Professional Interface**
-- **Intuitive UI** with guided workflows and progress tracking
-- **Robust error handling** that never crashes, always recovers
-- **Flexible data import** supporting various CSV formats and encodings
-- **Real-time validation** with actionable feedback and suggestions
-- **Beautiful visualisations** with automatic plot generation and fallbacks
-
-###  **Export Options**
-- **YAML metadata** following international standards
-- **FAIR bundles** (ZIP) with data, metadata, and documentation
-- **Citation files** (CFF) for academic attribution
-- **README generation** with usage instructions
+👉 Read my Substack post: [**The Missing Infrastructure Problem**](https://open.substack.com/pub/aminhaghighatbin/p/the-missing-infrastructure-problem?r=45weci&utm_campaign=post&utm_medium=web&showWelcomeOnShare=false)
 
 ## 🚀 Quick Start
 
@@ -77,7 +47,85 @@ pip install -r requirements.txt
 streamlit run run_app.py
 ```
 
-## 📊 Usage Example
+## Key Features
+
+### **Technique Support**
+- **Cyclic Voltammetry (CV)** - Full parameter validation and visualisation
+- **Electrochemical Impedance Spectroscopy (EIS)** - Nyquist plot generation
+- **Differential Pulse Voltammetry (DPV)** - Pulse parameter optimisation
+- **Square Wave Voltammetry (SWV)** - Frequency domain analysis
+- **Chronoamperometry (CA)** - Time-based measurements
+
+### **FAIR Compliance**
+- **Findable:** Unique identifiers, rich metadata, controlled vocabularies
+- **Accessible:** Open formats (CSV, YAML), standard protocols
+- **Interoperable:** EMMO ontology integration, JSON schema validation
+- **Reusable:** Clear licensing, attribution, comprehensive documentation
+
+### **Interface**
+- **Intuitive UI** with guided workflows and progress tracking
+- **Robust error handling** that never crashes, always recovers
+- **Flexible data import** supporting various CSV formats and encodings
+- **Real-time validation** with actionable feedback and suggestions
+- **Beautiful visualisations** with automatic plot generation and fallbacks
+
+### **Export Options**
+- **YAML metadata** following international standards
+- **FAIR bundles** (ZIP) with data, metadata, and documentation
+- **Citation files** (CFF) for academic attribution
+- **README generation** with usage instructions
+
+## After Download - What Next?
+
+Your FAIR bundle contains everything needed for data sharing and publication:
+
+### 📁 **Bundle Contents**
+```
+your-experiment-FAIR-bundle.zip
+├── data/
+│   └── your_original_data.csv      # Original uploaded file
+├── metadata/
+│   ├── metadata.yaml               # Complete FAIR metadata with compliance scores
+│   └── CITATION.cff                # Citation file for dataset attribution
+└── documentation/
+    └── README.md                   # Experiment documentation and usage guide
+```
+
+### 🚀 **Repository Submission**
+1. **Upload to Zenodo/Figshare:**
+   - Create new upload
+   - Drag entire ZIP file
+   - Copy metadata from `experiment_metadata.yaml`
+   - Publish with DOI
+
+2. **GitHub/GitLab Data Repository:**
+   - Extract bundle contents
+   - Add your own visualisations to a plots/ or figures/ folder
+   - Commit to version control
+   - Tag release with version number
+
+### 📝 **Citation Integration**
+- **For Papers:** Copy citation from `CITATION.cff`
+- **For Data Availability Statements:** Use generated DOI
+- **For Methods Sections:** Reference `methodology.md`
+
+### ✅ **Quality Assurance**
+Check the fair_compliance section in metadata.yaml for:
+
+- **FAIR Compliance:** All four principles addressed (Findable, Accessible, Interoperable, Reusable)
+- **EMMO Integration:** Controlled vocabulary terms and mappings
+- **Completeness:** Ensure all required experimental parameters are documented
+
+### 🤝 **Sharing Best Practices**
+- Include the entire bundle when sharing data
+- Add your own publication-ready plots before repository submission
+- Always reference the DOI in publications
+- Credit EChem FAIRifier in acknowledgments
+- Share feedback for tool improvement
+
+**Questions?** Check our [User Guide](docs/USER_GUIDE.md) or [open an issue](https://github.com/haghighatbin/echem-fairifier/issues).
+
+## Usage Example
 
 ### 1. **Upload Data**
 ```csv
@@ -111,7 +159,7 @@ EChem FAIRifier/
 └──  Data Processing (Plotting & analysis)
 ```
 
-## 🌟 FAIR Compliance Features
+## FAIR Compliance Features
 
 ### Findable
 - **Unique identifiers** (UUID) for each experiment
@@ -137,11 +185,11 @@ EChem FAIRifier/
 - **Comprehensive documentation** auto-generated
 - **Citation files** (CFF) for academic use
 
-## 🔬 Scientific Impact
+## Scientific Impact
 
 ### For Researchers
 - **Reduce metadata overhead** - automated generation saves hours
-- **Improve reproducibility** - standardized documentation
+- **Improve reproducibility** - standardised documentation
 - **Enable collaboration** - interoperable data formats
 - **Accelerate publication** - citation-ready outputs
 
@@ -152,17 +200,10 @@ EChem FAIRifier/
 - **Support open science** initiatives
 
 ### For the Community
-- **Standardize practices** across electrochemistry
+- **Standardise practices** across electrochemistry
 - **Enable meta-analyses** with consistent metadata
 - **Improve data discovery** through better indexing
 - **Accelerate research** through data reuse
-
-## 📚 Documentation
-
-- **[User Guide](docs/USER_GUIDE.md)** - Complete usage instructions
-- **[Contributing](docs/CONTRIBUTING.md)** - How to contribute
-- **[API Reference](docs/API_REFERENCE.md)** - Developer documentation
-- **[Examples](examples/)** - Sample data and tutorials
 
 ## 🤝 Contributing
 
@@ -180,28 +221,12 @@ We welcome contributions from the electrochemistry community!
 2. Check [open issues](https://github.com/haghighatbin/echem-fairifier/issues)
 3. Join discussions in [GitHub Discussions](https://github.com/haghighatbin/echem-fairifier/discussions)
 
-## 📖 Citation
+## 📚 Documentation
 
-If you use EChem FAIRifier in your research, please cite:
-
-```bibtex
-@software{haghighatbin2024echem,
-  title = {EChem FAIRifier: Making electrochemical data FAIR-compliant},
-  author = {Haghighatbin, Amin},
-  year = {2024},
-  url = {https://github.com/haghighatbin/echem-fairifier},
-  version = {1.0.0}
-  doi = {10.5281/zenodo.15737409},
-  url = {https://doi.org/10.5281/zenodo.15737409}
-}
-```
-
-## 🏆 Recognition
-
-- **FAIR Principles** compliant tool
-- **EMMO Ontology** integration for international standards
-- **Open Source** commitment to scientific transparency
-- **Community Driven** development for real-world needs
+- **[User Guide](docs/USER_GUIDE.md)** - Complete usage instructions
+- **[Contributing](docs/CONTRIBUTING.md)** - How to contribute
+- **[API Reference](docs/API_REFERENCE.md)** - Developer documentation
+- **[Examples](examples/)** - Sample data and tutorials
 
 ## 📈 Roadmap
 
@@ -218,6 +243,26 @@ If you use EChem FAIRifier in your research, please cite:
 - 🔄 **Batch processing** for multiple files
 - 🔄 **Advanced analytics** and quality metrics
 
+## 📖 Citation
+
+If you use EChem FAIRifier in your research, please cite:
+
+Haghighatbin, A. (2025). EChem FAIRifier: Making electrochemical data FAIR-compliant (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.15737409
+
+### BibTeX
+
+```bibtex
+@software{haghighatbin2025echem,
+  title = {EChem FAIRifier: Making electrochemical data FAIR-compliant},
+  author = {Haghighatbin, Amin},
+  year = {2025},
+  publisher = {Zenodo},
+  version = {v1.0.0},
+  doi = {10.5281/zenodo.15737409},
+  url = {https://doi.org/10.5281/zenodo.15737409}
+}
+```
+
 ## 💬 Community
 
 - **📧 Contact:** [aminhb@tutanota.com](mailto:aminhb@tutanota.com)
@@ -225,11 +270,11 @@ If you use EChem FAIRifier in your research, please cite:
 - **🐛 Issues:** [GitHub Issues](https://github.com/haghighatbin/echem-fairifier/issues)
 - **💡 Discussions:** [GitHub Discussions](https://github.com/haghighatbin/echem-fairifier/discussions)
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-##  Acknowledgments
+## Acknowledgments
 
 - **EMMO Community** for electrochemistry ontology development
 - **Streamlit Team** for the excellent web framework
@@ -240,7 +285,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**[🚀 Try EChem FAIRifier Now](https://echem-fairifier.up.railway.app)**
+**[Try EChem FAIRifier](https://echem-fairifier.up.railway.app)**
 
 *Making electrochemical research more reproducible, one dataset at a time.*
 
