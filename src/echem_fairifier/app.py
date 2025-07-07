@@ -33,12 +33,13 @@ from src.echem_fairifier.core.emmo_integration import EMMOElectrochemistryIntegr
 from src.echem_fairifier.ui.components import UIComponents
 from src.echem_fairifier._version import __version__, get_version_info
 
-# Serve Google verification file if accessed
-query_params = st.query_params
-if query_params.get("gv") == '1':
-    st.markdown("google-site-verification: google814ae2d9326e9a51.html")
-    st.stop()
-
+# # Serve Google verification file if accessed
+# query_params = st.query_params
+# if query_params.get("gv") == '1':
+#     st.markdown("google-site-verification: google814ae2d9326e9a51.html")
+#     st.stop()
+# Google verification meta tag
+st.markdown('<meta name="google-site-verification" content="jWCTQ7neYkPSHsLkhNcqzHEN9d9-bYzmKUX3SYmE_T4" />', unsafe_allow_html=True)
 # Page configuration
 st.set_page_config(
     page_title="EChem FAIRifier",
