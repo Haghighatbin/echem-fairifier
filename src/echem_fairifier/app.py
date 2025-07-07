@@ -34,11 +34,9 @@ from src.echem_fairifier.ui.components import UIComponents
 from src.echem_fairifier._version import __version__, get_version_info
 
 # Serve Google verification file if accessed
-url = st.experimental_get_url() if hasattr(st, 'experimental_get_url') else ""
-if "google814ae2d9326e9a51.html" in url:
-    components.html("""
-        google-site-verification: google814ae2d9326e9a51.html
-    """, height=50)
+query_params = st.experimental_get_query_params()
+if query_params.get("gv") == ["1"]:
+    st.markdown("google-site-verification: google814ae2d9326e9a51.html")
     st.stop()
 
 # Page configuration
