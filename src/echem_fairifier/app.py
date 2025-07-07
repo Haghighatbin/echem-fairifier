@@ -20,6 +20,7 @@ src_dir = current_dir.parent.parent
 sys.path.insert(0, str(src_dir))
 
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 from io import BytesIO
@@ -32,6 +33,15 @@ from src.echem_fairifier.core.emmo_integration import EMMOElectrochemistryIntegr
 from src.echem_fairifier.ui.components import UIComponents
 from src.echem_fairifier._version import __version__, get_version_info
 
+# Serve Google verification file if accessed
+from streamlit.runtime.scriptrunner import get_script_run_ctx
+ctx = get_script_run_ctx()
+if ctx and ctx.request and ctx.request.url:
+    if ctx.request.url.endswith("google814ae2d9326e9a51.html"):
+        components.html("""
+            google-site-verification: google814ae2d9326e9a51.html
+        """, height=50)
+        st.stop()
 
 # Page configuration
 st.set_page_config(
