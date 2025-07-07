@@ -34,7 +34,7 @@ from src.echem_fairifier.ui.components import UIComponents
 from src.echem_fairifier._version import __version__, get_version_info
 
 # Serve Google verification file if accessed
-query_params = st.experimental_get_query_params()
+query_params = st.query_params
 if query_params.get("gv") == ["1"]:
     st.markdown("google-site-verification: google814ae2d9326e9a51.html")
     st.stop()
