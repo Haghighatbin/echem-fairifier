@@ -1,13 +1,238 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>EChem FAIRifier</title>
-    <meta name="google-site-verification" content="jWCTQ7neYkPSHsLkhNcqzHEN9d9-bYzmKUX3SYmE_T4" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="OBJabGZk3HM-c5MIJV6ch02yqgykhwR_oTGJhm_LY0E" />
+    <title>EChem FAIRifier - Making Electrochemistry Data FAIR</title>
+    <meta name="description" content="A comprehensive tool for making electrochemistry data Findable, Accessible, Interoperable, and Reusable (FAIR) compliant.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #2742b8 0%, #010a2e 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            padding: 3rem 0;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature {
+            padding: 2rem;
+            border-radius: 15px;
+            background: linear-gradient(145deg, #f0f4f8, #e2e8f0);
+            border-left: 5px solid #667eea;
+        }
+
+        .feature h3 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .feature p {
+            color: #4a5568;
+            line-height: 1.7;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .tech-stack {
+            background: #f7fafc;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        .tech-stack h3 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #2d3748;
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .tech-tag {
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: white;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .main-content {
+                padding: 2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>EChem FAIRifier</h1>
-    <p>A tool for making electrochemistry data FAIR.</p>
-    <a href="https://echem-fairifier.up.railway.app">View Live App</a>
-    <a href="https://github.com/Haghighatbin/echem-fairifier">View Source Code</a>
+    <div class="container">
+        <header class="header">
+            <h1>EChem FAIRifier</h1>
+            <p>Making Electrochemistry Data FAIR-Compliant</p>
+        </header>
+
+        <main class="main-content">
+            <section>
+                <h2 style="text-align: center; margin-bottom: 2rem; color: #2d3748; font-size: 2.2rem;">
+                    Transform Your Electrochemistry Data
+                </h2>
+                <p style="text-align: center; font-size: 1.2rem; color: #4a5568; margin-bottom: 3rem;">
+                    A comprehensive tool for making electrochemistry data <strong>Findable, Accessible, Interoperable, and Reusable</strong> according to FAIR data principles.
+                </p>
+
+                <div class="features">
+                    <div class="feature">
+                        <h3>🔍 Findable</h3>
+                        <p>Enhance discoverability with rich metadata and unique identifiers. Make your research data easily searchable and indexed.</p>
+                    </div>
+                    <div class="feature">
+                        <h3>🌐 Accessible</h3>
+                        <p>Ensure data accessibility through standardised protocols and clear authentication procedures.</p>
+                    </div>
+                    <div class="feature">
+                        <h3>🔄 Interoperable</h3>
+                        <p>Enable seamless data exchange using community standards and ontologies like EMMO.</p>
+                    </div>
+                    <div class="feature">
+                        <h3>♻️ Reusable</h3>
+                        <p>Maximise data reuse potential with comprehensive documentation and clear usage licences.</p>
+                    </div>
+                </div>
+
+                <div class="tech-stack">
+                    <h3>Tags & Topics</h3>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Electrochemistry</span>
+                        <span class="tech-tag">EMMO Ontology</span>
+                        <span class="tech-tag">Metadata Standards</span>
+                        <span class="tech-tag">Data Validation</span>
+                    </div>
+                </div>
+
+                <div class="cta-buttons">
+                    <a href="https://echem-fairifier.up.railway.app" class="btn btn-primary">
+                        Launch Application
+                    </a>
+                    <a href="https://github.com/Haghighatbin/echem-fairifier" class="btn btn-secondary">
+                        View Source Code
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 EChem FAIRifier | A project by Amin Haghighatbin | Making Science More Accessible</p>
+        </footer>
+    </div>
 </body>
 </html>
